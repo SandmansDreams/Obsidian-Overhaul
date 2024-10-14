@@ -10,156 +10,138 @@ Maybe use the cursor to place text, but if so, make sure to put it back afterwar
 May need to make an editor extension
  */
 
-import {
-    MarkdownView,
-    Plugin
-} from 'obsidian';
+import { MarkdownView, Plugin } from 'obsidian';
 
-// Main Plugin Function
+// Main Plugin Class
 export default class BlocksPlugin extends Plugin {
-    private handle: HTMLElement | null = null; // Store reference to the handle
+    private handle: HTMLElement | null = null;
+    private clonedElement: HTMLElement | null = null; // The cloned element used for dragging
+    private isDragging: boolean = false; // To track if we're currently dragging
+    private originalElement: HTMLElement | null = null; // The element being cloned
 
     async onload() {
         console.log('Obsidian Blocks Loaded');
-
-        // Register mouse event listeners using arrow functions
-        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => { this.handleMouseEnter(event); }, true);
-        this.registerDomEvent(document, 'mouseleave', (event: MouseEvent) => { this.handleMouseLeave(event); }, true);
+        
+        // Register mouse events
+        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.handleMouseEnter(event), true);
+        this.registerDomEvent(document, 'mousedown', (event: MouseEvent) => this.startDragging(event), true);
+        this.registerDomEvent(document, 'mousemove', (event: MouseEvent) => this.onMouseMove(event), true);
+        this.registerDomEvent(document, 'mouseup', (event: MouseEvent) => this.endDragging(event), true);
     }
 
     onunload() {
-        console.log('Obsidian Blocks UnLoaded');
+        console.log('Obsidian Blocks Unloaded');
     }
 
-    // Add a bounding box and handle on mouse enter
+    // Mouse enters the element, trigger cloning
     handleMouseEnter(event: MouseEvent) {
         const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+        if (!view) return;
 
-        if (view) {
-            const target = event.target as HTMLElement;
-            const callout = target.closest('.callout');
-            const codeblockLine = target.closest('.HyperMD-codeblock-begin');
-
-            if (callout) {
-                this.addBoundingBox(callout as HTMLElement);
-                this.addHandle(callout as HTMLElement);
-                console.log('Highlighted callout');
-            }
-
-            if (codeblockLine) {
-                const codeblockContainer = this.findCompleteCodeBlock(codeblockLine as HTMLElement);
-                if (codeblockContainer.length > 0) {
-                    this.addBoundingBoxMultiple(codeblockContainer);
-                    this.addHandle(codeblockContainer[0]);  // Add handle to the first line
-                    console.log('Highlighted full code block');
-                }
-            }
-
-            if (target.classList.contains('cm-line')) {
-                this.addBoundingBox(target);
-                this.addHandle(target);
-                console.log('Highlighted line');
-            }
-        }
-    }
-
-    // Remove the bounding box and handle on mouse leave
-    handleMouseLeave(event: MouseEvent) {
         const target = event.target as HTMLElement;
-        const callout = target.closest('.callout');
-        const codeblockLine = target.closest('.HyperMD-codeblock-begin');
-    
-        if (callout) {
-            this.removeBoundingBox(callout as HTMLElement);
-            this.removeHandle();
-            return;
+        const callout = target.closest('callout');
+        const codeblockLine = target.closest('HyperMD-codeblock-begin');
+
+        // Only clone elements when the user hovers over them
+        if (callout || codeblockLine) {
+            this.cloneElement(target);
         }
-    
-        if (codeblockLine) {
-            const codeblockContainer = this.findCompleteCodeBlock(codeblockLine as HTMLElement);
-            if (codeblockContainer.length > 0) {
-                this.removeBoundingBoxMultiple(codeblockContainer);
-                this.removeHandle();
-                return;
+
+        if (target.classList.contains('cm-line')) {
+            this.cloneElement(target);
+        }
+    }
+
+    // Clone the hovered element into a new overlay with the handle
+    cloneElement(target: HTMLElement) {
+        // Avoid creating multiple clones
+        if (this.clonedElement) {
+            this.clonedElement.remove();
+        }
+
+        // Clone the original element
+        this.clonedElement = target.cloneNode(true) as HTMLElement;
+        this.clonedElement.style.position = 'absolute';
+        this.clonedElement.style.pointerEvents = 'none'; // Disable direct interactions with this element
+        this.clonedElement.style.zIndex = '1000';
+        this.clonedElement.style.opacity = '0.9'; // Slight transparency for visual feedback
+        this.clonedElement.style.outline = '2px solid grey'; // Visual cue
+        this.clonedElement.style.backgroundColor = 'rgba(255,255,255,0.9)';
+        this.originalElement = target; // Keep a reference to the original
+
+        // Add the drag handle to the cloned element
+        this.addHandle(this.clonedElement);
+
+        // Append the cloned element to the body
+        document.body.appendChild(this.clonedElement);
+
+        // Position the cloned element over the original
+        const rect = target.getBoundingClientRect();
+        this.clonedElement.style.left = `${rect.left}px`;
+        this.clonedElement.style.top = `${rect.top}px`;
+        this.clonedElement.style.width = `${rect.width}px`;
+        this.clonedElement.style.height = `${rect.height}px`;
+    }
+
+    // Add a handle to the cloned element
+    addHandle(clonedElement: HTMLElement) {
+        // Create a drag handle
+        this.handle = document.createElement('div');
+        this.handle.className = 'drag-handle';
+        this.handle.innerHTML = '&#x2630;';
+        this.handle.style.position = 'absolute';
+        this.handle.style.left = '-30px'; // Place the handle to the left of the element
+        this.handle.style.top = '50%';
+        this.handle.style.transform = 'translateY(-50%)'; // Center the handle vertically
+        this.handle.style.cursor = 'grab';
+        this.handle.style.fontSize = '14px';
+        this.handle.style.color = 'grey';
+        this.handle.style.backgroundColor = 'rgba(255,255,255,0.8)';
+        this.handle.style.borderRadius = '3px';
+        this.handle.style.zIndex = '1001'; // Above the cloned element
+
+        // Append the handle to the cloned element
+        clonedElement.appendChild(this.handle);
+    }
+
+    // Start dragging the cloned element
+    startDragging(event: MouseEvent) {
+        if (event.target === this.handle) {
+            this.isDragging = true;
+            this.clonedElement!.style.pointerEvents = 'none'; // Prevent interactions with the cloned element
+        }
+    }
+
+    // Move the cloned element during dragging
+    onMouseMove(event: MouseEvent) {
+        if (this.isDragging && this.clonedElement) {
+            this.clonedElement.style.left = `${event.clientX - 20}px`; // Move with some offset
+            this.clonedElement.style.top = `${event.clientY - 20}px`;
+        }
+    }
+
+    // End dragging and "drop" the element into place
+    endDragging(event: MouseEvent) {
+        if (this.isDragging && this.clonedElement) {
+            this.isDragging = false;
+
+            // Get the drop target (where the user let go)
+            const dropTarget = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
+            const insertPosition = dropTarget.closest('cm-line');
+
+            // Remove the clone after dropping
+            this.clonedElement.remove();
+            this.clonedElement = null;
+
+            if (insertPosition && this.originalElement) {
+                // Move the original element to the new position
+                insertPosition.parentElement?.insertBefore(this.originalElement, insertPosition.nextElementSibling);
+
+                // Reset styles on the original element
+                this.originalElement.style.outline = '';
+                this.originalElement.style.opacity = '1.0';
+                this.originalElement = null;
             }
         }
-    
-        if (target.classList.contains('cm-line')) {
-            this.removeBoundingBox(target);
-            this.removeHandle();
-        }
-    }
-
-    // Add bounding box styles for a single element
-    addBoundingBox(element: HTMLElement) {
-        element.style.outline = '2px solid grey';
-        element.style.borderRadius = '5px';
-    }
-
-    // Add bounding box styles for multiple elements (code block)
-    addBoundingBoxMultiple(elements: HTMLElement[]) {
-        elements.forEach((element) => {
-            this.addBoundingBox(element);
-        });
-    }
-
-    // Remove bounding box styles for a single element
-    removeBoundingBox(element: HTMLElement) {
-        element.style.outline = '';
-        element.style.borderRadius = '';
-    }
-
-    // Remove bounding box styles for multiple elements
-    removeBoundingBoxMultiple(elements: HTMLElement[]) {
-        elements.forEach((element) => {
-            this.removeBoundingBox(element);
-        });
-    }
-
-    // Add a draggable handle as a visual element
-    addHandle(element: HTMLElement) {
-        if (!this.handle) {
-            this.handle = document.createElement('div');
-            this.handle.className = 'drag-handle';
-            this.handle.innerHTML = '&#x2630;';
-            this.handle.style.position = 'fixed';
-            this.handle.style.cursor = 'grab';
-            this.handle.style.fontSize = '14px';
-            this.handle.style.color = 'grey';
-            this.handle.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-            this.handle.style.borderRadius = '3px';
-            this.handle.style.zIndex = '1000';
-
-            document.body.appendChild(this.handle);
-        }
-
-        const rect = element.getBoundingClientRect();
-        
-        if (this.handle) {
-            this.handle.style.left = `${rect.left - 30}px`;
-            this.handle.style.top = `${rect.top + (rect.height / 2)}px`;
-        }
-    }
-
-    // Remove the handle when the mouse leaves
-    removeHandle() {
-        if (this.handle) {
-            this.handle.remove();
-            this.handle = null;
-        }
-    }
-
-    // Function to find and return all lines of the code block
-    findCompleteCodeBlock(codeblockLine: HTMLElement): HTMLElement[] {
-        const codeBlockLines: HTMLElement[] = [];
-        let currentElement: HTMLElement | null = codeblockLine;
-
-        // Traverse down to get all lines in the block
-        while (currentElement && currentElement.classList.contains('cm-line')) {
-            codeBlockLines.push(currentElement);
-            currentElement = currentElement.nextElementSibling as HTMLElement;
-        }
-
-        return codeBlockLines;
     }
 }
