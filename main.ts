@@ -1,6 +1,6 @@
 /* NOTES
 There are several possible ways to accomplish this, but it needs to be able to access all markdown instances including callouts and images
-1. Select all the text within a range depending on the type of thing that is there (lines and headings are just line selections, callouts are groups of lines)
+1. Select all the text within a range depending on the type of thing that is there (lines and headings are just line selections, callouts and codeblocks are groups of lines)
 2. Store the value in the line or set of lines temporarily and delete it on the current line
 3. Show visuals of dragging the group as it floats over the doc and shows a preview of where it will be placed
 4. Use editor.replaceRange() to replace the line with stored data, shift other lines around drop position
