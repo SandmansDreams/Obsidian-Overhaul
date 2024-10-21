@@ -1,4 +1,4 @@
-import { Editor, Plugin } from 'obsidian';
+import { Editor, MarkdownView, Plugin } from 'obsidian';
 
 export default class DragDropPlugin extends Plugin {
 
@@ -28,10 +28,10 @@ initializeDragDrop() {
 
 // Get the current active editor (returns Editor or null if no editor is active)
 getEditor(): Editor | null {
-    const leaf = this.app.workspace.activeLeaf;
-    if (leaf && leaf.view && leaf.view.sourceMode) {
-	const editor = leaf.view.sourceMode.cmEditor;
-		return editor ? (editor as Editor) : null;
+    const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+    if (view) {
+        const editor = view.editor;
+        return editor ? (editor as Editor) : null;
     }
     return null;
 }
