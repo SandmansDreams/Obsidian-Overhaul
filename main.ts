@@ -1,15 +1,68 @@
-/* NOTES
-There are several possible ways to accomplish this, but it needs to be able to access all markdown instances including callouts and images
-1. Select all the text within a range depending on the type of thing that is there (lines and headings are just line selections, callouts and codeblocks are groups of lines)
-2. Store the value in the line or set of lines temporarily and delete it on the current line
-3. Show visuals of dragging the group as it floats over the doc and shows a preview of where it will be placed
-4. Use editor.replaceRange() to replace the line with stored data, shift other lines around drop position
-5. Clear the data in the temporary buffer
+// Import Obsidian API's needed
+import { Plugin } from 'obsidian';
 
-Maybe use the cursor to place text, but if so, make sure to put it back afterwards
-May need to make an editor extension
- */
+// Main Plugin Class
+export default class BlocksPlugin extends Plugin {
+    // Variable declaration
+    private draggableElement : HTMLElement;
+    private elementData: string = '';
+    private clone : Node; //= this.element.cloneNode(true); | May have to change this or make it part of a function
 
+    // Load function events and needs when plugin is loaded
+    async onload() {
+        console.log('Obsidian Blocks Plugin Loaded');
+
+        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.hoverSelect(event), true);
+        this.registerDomEvent(document, 'mouseleave', (event: MouseEvent) => this.hoverDeselect(event), true);
+        //this.registerDomEvent(document, 'dragstart', (event: MouseEvent) => this.drag(event), true);
+    }
+    
+    // Unload anything to conserve system resources when plugin is disabled
+    async onunload() {
+        console.log('Obsidian Blocks Plugin Unloaded');
+    }
+
+    hoverSelect(event : MouseEvent) {
+        // Check if the is the markdown view and cancel running the function if it isn't
+        // May not be necessary as the mouse event happens when a document element is hovered? Does this make it not work in source or reading view?
+        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+        if (view) {
+            // Variable declaration
+            let target : HTMLElement = event.target as HTMLElement
+            let targetName : string = target.tagName;
+
+            // Function checks for everything else first and cm-line last because everything has the cm-line class
+            if (targetName = 'cm-callout') {
+                console.log("Targeted: cm-callout on lines... don't know yet");
+                this.createClone(target)
+            } else if (targetName = 'HyperMD-codeblock') {
+                console.log("Targeted: codeblock (not actually yet)");
+                return;
+            } else if (targetName = 'cm-line') {
+                console.log("Targeted: cm-line");
+                this.createClone(target)
+            }
+        }
+    }
+
+    hoverDeselect(event : MouseEvent) {
+
+    }
+
+    createClone(element : HTMLElement) {
+        // Clone the element as a node
+        element.style.opacity = '.2'
+        this.clone = element.cloneNode(true);
+
+        // Append the new node to the original node
+        element.appendChild(this.clone);
+    }
+}
+
+
+
+
+/* CHATGPT ONLY VERSION
 import { MarkdownView, Plugin } from 'obsidian';
 
 // Main Plugin Class
@@ -66,7 +119,7 @@ export default class BlocksPlugin extends Plugin {
         this.clonedElement.style.zIndex = '1000';
         this.clonedElement.style.opacity = '0.9'; // Slight transparency for visual feedback
         this.clonedElement.style.outline = '2px solid grey'; // Visual cue
-        this.clonedElement.style.backgroundColor = 'rgba(255,255,255,0.9)';
+        this.clonedElement.style.backgroundColor = 'black';
         this.originalElement = target; // Keep a reference to the original
 
         // Add the drag handle to the cloned element
@@ -145,3 +198,4 @@ export default class BlocksPlugin extends Plugin {
         }
     }
 }
+*/
