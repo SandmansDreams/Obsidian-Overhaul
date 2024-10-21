@@ -27,8 +27,8 @@ initializeDragDrop() {
 }
 
 // Get the current active editor (returns Editor or null if no editor is active)
-getEditor(): Editor | null {
-    const leaf = this.app.workspace.activeLeaf;
+getEditor(): Editor | null { // Basically, what you've done here is now it's own method. https://docs.obsidian.md/Plugins/Editor/Editor
+    const leaf = this.app.workspace.activeLeaf; // https://docs.obsidian.md/Reference/TypeScript+API/Workspace/activeLeaf
     if (leaf && leaf.view && leaf.view.sourceMode) {
 	const editor = leaf.view.sourceMode.cmEditor;
 		return editor ? (editor as Editor) : null;
