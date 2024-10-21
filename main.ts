@@ -1,5 +1,5 @@
 // Import Obsidian API's needed
-import { Plugin } from 'obsidian';
+import { MarkdownView, Plugin } from 'obsidian';
 
 // Main Plugin Class
 export default class BlocksPlugin extends Plugin {
@@ -23,25 +23,31 @@ export default class BlocksPlugin extends Plugin {
     }
 
     hoverSelect(event : MouseEvent) {
+        // Variable declaration
+        let target : HTMLElement = event.target as HTMLElement
+        let targetName : string = target.tagName;
+
         // Check if the is the markdown view and cancel running the function if it isn't
         // May not be necessary as the mouse event happens when a document element is hovered? Does this make it not work in source or reading view?
         const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-        if (view) {
-            // Variable declaration
-            let target : HTMLElement = event.target as HTMLElement
-            let targetName : string = target.tagName;
+        if (!view) {
+            return;
+        }
 
-            // Function checks for everything else first and cm-line last because everything has the cm-line class
-            if (targetName = 'cm-callout') {
-                console.log("Targeted: cm-callout on lines... don't know yet");
-                this.createClone(target)
-            } else if (targetName = 'HyperMD-codeblock') {
-                console.log("Targeted: codeblock (not actually yet)");
-                return;
-            } else if (targetName = 'cm-line') {
-                console.log("Targeted: cm-line");
-                this.createClone(target)
-            }
+        if (!view.containerEl.contains(target)) {
+            return;
+        }
+
+        // Function checks for everything else first and cm-line last because everything has the cm-line class
+        if (targetName = 'cm-callout') {
+            console.log("Targeted: cm-callout on lines... don't know yet");
+            this.createClone(target)
+        } else if (targetName = 'HyperMD-codeblock') {
+            console.log("Targeted: codeblock (not actually yet)");
+            return;
+        } else if (targetName = 'cm-line') {
+            console.log("Targeted: cm-line");
+            this.createClone(target)
         }
     }
 
@@ -49,13 +55,20 @@ export default class BlocksPlugin extends Plugin {
 
     }
 
-    createClone(element : HTMLElement) {
+    createClone(target : HTMLElement) {
+        // Avoid creating multiple clones
+        if (this.clone) {
+            this.clone.parentNode?.removeChild(this.clone);
+            console.log('Clone removed.')
+        }
+
         // Clone the element as a node
-        element.style.opacity = '.2'
-        this.clone = element.cloneNode(true);
+        target.style.opacity = '.2'
+        this.clone = target.cloneNode(true);
 
         // Append the new node to the original node
-        element.appendChild(this.clone);
+        target.appendChild(this.clone);
+        console.log('Clone created.')
     }
 }
 
