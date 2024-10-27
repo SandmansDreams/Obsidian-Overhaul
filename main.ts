@@ -1,25 +1,64 @@
+/*
+NOTES:
+- Can use the .cm-active CSS class in order to do the line preview
+- Might be able to use the CSS thing ::before to append it to the collapsible folder icon and inherit its properties
+*/
+
 // Import Obsidian API's needed
 import { MarkdownView, Plugin } from 'obsidian';
 
 // Main Plugin Class
 export default class BlocksPlugin extends Plugin {
     // Variable declaration
-    private draggableElement : HTMLElement;
-    private elementData: string = '';
-    private clone : Node; //= this.element.cloneNode(true); | May have to change this or make it part of a function
+    //private draggableElement : HTMLElement;
+    //private elementData: string = '';
+    //private clone : Node; //= this.element.cloneNode(true); | May have to change this or make it part of a function
+    private dragHandle : HTMLElement;
 
     // Load function events and needs when plugin is loaded
     async onload() {
         console.log('Obsidian Blocks Plugin Loaded');
 
-        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.hoverSelect(event), true);
-        this.registerDomEvent(document, 'mouseleave', (event: MouseEvent) => this.hoverDeselect(event), true);
+        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.testRender(event), true);
+        //this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.hoverSelect(event), true);
+        //this.registerDomEvent(document, 'mouseleave', (event: MouseEvent) => this.hoverDeselect(event), true);
         //this.registerDomEvent(document, 'dragstart', (event: MouseEvent) => this.drag(event), true);
     }
     
     // Unload anything to conserve system resources when plugin is disabled
     async onunload() {
         console.log('Obsidian Blocks Plugin Unloaded');
+    }
+
+    testRender(event: MouseEvent) {
+        //console.log(event.target);
+        const target : HTMLElement = event.target as HTMLElement;
+        const isWorkspace = this.checkEnvironment(target);
+
+        if (isWorkspace) {
+            this.dragHandle = document.createElement('span');
+            this.dragHandle.className = 'drag-handle';
+            this.dragHandle.innerText = '::';
+    
+            target.appendChild(this.dragHandle);
+        } else {
+            return;
+        }
+    }
+
+    checkEnvironment(target: HTMLElement) {
+        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+        if (!view) {
+            console.log('Check Failed');
+            return false;
+        }
+      
+        if (!view.containerEl.contains(target)) {
+            console.log('Check Failed');
+            return false;
+        }
+        console.log('Check Passed');
+        return true;
     }
 
     hoverSelect(event : MouseEvent) {
@@ -41,18 +80,18 @@ export default class BlocksPlugin extends Plugin {
         // Function checks for everything else first and cm-line last because everything has the cm-line class
         if (targetName = 'cm-callout') {
             console.log("Targeted: cm-callout on lines... don't know yet");
-            this.createClone(target)
+            //this.createClone(target) BROKEN
         } else if (targetName = 'HyperMD-codeblock') {
             console.log("Targeted: codeblock (not actually yet)");
             return;
         } else if (targetName = 'cm-line') {
             console.log("Targeted: cm-line");
-            this.createClone(target)
+            //this.createClone(target) BROKEN
         }
     }
 
     hoverDeselect(event : MouseEvent) {
-
+        
     }
 
     createClone(target : HTMLElement) {

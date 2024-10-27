@@ -6,3 +6,37 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+drag-handle {
+    /* position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+    height: 100%;
+    cursor: var(--cursor);
+    padding-inline-end: 5px; */
+    background-color: white;
+}
+
+
+
+/*
+addHandle(clonedElement: HTMLElement) {
+    // Create a drag handle
+    this.handle = document.createElement('div');
+    this.handle.className = 'drag-handle';
+    this.handle.innerHTML = '&#x2630;';
+    this.handle.style.position = 'absolute';
+    this.handle.style.left = '-30px'; // Place the handle to the left of the element
+    this.handle.style.top = '50%';
+    this.handle.style.transform = 'translateY(-50%)'; // Center the handle vertically
+    this.handle.style.cursor = 'grab';
+    this.handle.style.fontSize = '14px';
+    this.handle.style.color = 'grey';
+    this.handle.style.backgroundColor = 'rgba(255,255,255,0.8)';
+    this.handle.style.borderRadius = '3px';
+    this.handle.style.zIndex = '1001'; // Above the cloned element
+
+    // Append the handle to the cloned element
+    clonedElement.appendChild(this.handle);
+}
+*/
