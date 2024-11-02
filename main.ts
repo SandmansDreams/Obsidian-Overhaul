@@ -2,39 +2,158 @@
 NOTES:
 - Can use the .cm-active CSS class in order to do the line preview
 - Might be able to use the CSS thing ::before to append it to the collapsible folder icon and inherit its properties
+- Look into widgets
+  - Use inline widgets
+- IMPLEMENT THE HANDLE AS A BUTTON
+- Use the DataTransfer object to handle movement of data
+- Look into this.registerMarkdownCodeBlocksProcessor() for codeblock ease
+
+TODO:
+- Select an move a set of lines at once (might need to implement block functionality for this)
+- Column blocks
 */
 
-// Import Obsidian API's needed
-import { MarkdownView, Plugin } from 'obsidian';
+
+
+
+
+
+import { Plugin, Editor, MarkdownView,  } from 'obsidian';
+import { WidgetType, Decoration, EditorView, } from '@codemirror/view';
+
+// Widget class for the handle
+export class HandleWidget extends WidgetType {
+    toDOM(view: EditorView): HTMLElement {
+        const handle = document.createElement('span');
+        handle.innerText = '≡';
+        handle.className = 'drag-handle';
+        handle.draggable = true;
+        handle.addEventListener('dragstart', handleDrag(event: DragEvent));
+        return handle;
+    }
+}
+
+// Main plugin class
+export default class Blocks extends Plugin {
+    private dragHandle: HandleWidget;
+
+    // Load the plugin
+    async onload() {
+        console.log('Blocks Plugin Loaded') //REMOVE
+
+        this.registerDomEvent(document, 'mouseenter', (event : MouseEvent) => this.renderHandle(event), true);
+    }
+
+    // Unload the plugin
+    async onunload() {
+        console.log('Blocks Plugin Unoaded') //REMOVE
+    }
+
+    checkEnvironment() {
+        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+
+        // Make sure we are in markdown view
+        if (!view) {
+            console.log('Check Failed'); // REMOVE before final compilation
+            return false;
+        }
+      
+        // Make sure the target container element contains the target? Redundant??? (This was suggested by someone on the discord)
+        // if (!view.containerEl.contains(target)) {
+        //     console.log('Check Failed'); // REMOVE before final compilation
+        //     return false;
+        // }
+
+        // Psuedocode
+        // if (inside the text container) {
+        //     return true;
+        // }
+        
+
+        console.log('Check Passed'); // REMOVE before final compilation
+        return true;
+    }
+
+    renderHandle (editor: Editor, event: MouseEvent) {
+        if (this.checkEnvironment()) {
+            const target = event.target as HTMLElement;
+            //editor = this.app.workspace.getActiveViewOfType(MarkdownView);
+
+            // Remove the drag handle if it exists
+            if (this.dragHandle) {
+                this.dragHandle.destroy(this.dragHandle);
+            }
+    
+            this.dragHandle = new HandleWidget();
+
+        } else {
+            return;
+        }
+        
+    }
+
+    // Do the dragging of the handle itself
+    handleDrag (event: DragEvent) {
+        event.dataTransfer?.setData('text/plain', lineNumber.toString());
+    }
+}
+
+
+
+
+
+
+
+
+/* Alpha 1, non-working
+// Import API's
+import { on } from 'events';
+import { MarkdownView, Plugin, } from 'obsidian';
+import { EditorView, WidgetType } from '@codemirror/view';
+import { createBrotliCompress } from 'zlib';
+
+// Creates a widget class for the handle
+export class HandleWidget extends WidgetType {
+    toDOM(view: EditorView): HTMLElement {
+        const handle = document.createElement('span');
+        handle.innerText = '::';
+        handle.draggable = true;
+        handle.className = 'drag-handle';
+        handle.addEventListener('dragstart', handleHandler(event: DragEvent));
+        return handle;
+    }
+}
 
 // Main Plugin Class
 export default class BlocksPlugin extends Plugin {
-    // Variable declaration
-    //private draggableElement : HTMLElement;
-    //private elementData: string = '';
-    //private clone : Node; //= this.element.cloneNode(true); | May have to change this or make it part of a function
-    private dragHandle : HTMLElement;
+    private handleBuffer : string = ''; // May not be needed if thing works
+    private clone : HTMLElement; // No idea if this should be a node or HTMLElement or what the difference is
+    private dragHandle = new HandleWidget();
 
     // Load function events and needs when plugin is loaded
     async onload() {
-        console.log('Obsidian Blocks Plugin Loaded');
+        console.log('Obsidian Blocks Plugin Loaded'); // REMOVE before final compilation
 
-        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.testRender(event), true);
-        //this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.hoverSelect(event), true);
-        //this.registerDomEvent(document, 'mouseleave', (event: MouseEvent) => this.hoverDeselect(event), true);
+        // DOM events, do not use 'mouseover' as it activates every time the mouse is moved on an event, make sure to clear these 
+        //this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.testRender(event), true);
+        this.registerDomEvent(document, 'mouseenter', (event: MouseEvent) => this.handleRender(event), true);
+        this.registerDomEvent(document, 'mouseleave', (event: MouseEvent) => this.handleRemover(event), true);
         //this.registerDomEvent(document, 'dragstart', (event: MouseEvent) => this.drag(event), true);
     }
     
     // Unload anything to conserve system resources when plugin is disabled
     async onunload() {
-        console.log('Obsidian Blocks Plugin Unloaded');
+        console.log('Obsidian Blocks Plugin Unloaded'); // REMOVE before final compilation
     }
 
+    
+    // Test rendering function to figure out how to instance an HTML element
     testRender(event: MouseEvent) {
         //console.log(event.target);
         const target : HTMLElement = event.target as HTMLElement;
         const isWorkspace = this.checkEnvironment(target);
 
+        // If the workspace check passes, do the function, otherwise cancel it
         if (isWorkspace) {
             this.dragHandle = document.createElement('span');
             this.dragHandle.className = 'drag-handle';
@@ -45,71 +164,109 @@ export default class BlocksPlugin extends Plugin {
             return;
         }
     }
+    
 
+    // Check if the mouse is inside the editor and not anywhere else
+    // May want to update this to make sure the mouse is within the text container in the viewport the test still passes if the title and tab are hovered over, might be ".cm-resize"?
     checkEnvironment(target: HTMLElement) {
         const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+
+        // Make sure we are in markdown view
         if (!view) {
-            console.log('Check Failed');
+            console.log('Check Failed'); // REMOVE before final compilation
             return false;
         }
       
+        // Make sure the target container element contains the target? Redundant??? (This was suggested by someone on the discord)
         if (!view.containerEl.contains(target)) {
-            console.log('Check Failed');
+            console.log('Check Failed'); // REMOVE before final compilation
             return false;
         }
-        console.log('Check Passed');
+
+        Psuedocode
+        if (inside the text container) {
+            return true;
+        }
+        
+
+        console.log('Check Passed'); // REMOVE before final compilation
         return true;
     }
 
-    hoverSelect(event : MouseEvent) {
-        // Variable declaration
-        let target : HTMLElement = event.target as HTMLElement
-        let targetName : string = target.tagName;
+    // Render the handle when the line or element is hovered over
+    handleRender (event : MouseEvent) {
+        this.handleBuffer = '';
+        const target : HTMLElement = event.target as HTMLElement
+        //const targetClass : ??? = target.???;
+        const targetClass : string = target.className;
+        const isWorkspace = this.checkEnvironment(target);
 
-        // Check if the is the markdown view and cancel running the function if it isn't
-        // May not be necessary as the mouse event happens when a document element is hovered? Does this make it not work in source or reading view?
-        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-        if (!view) {
-            return;
-        }
+        if (isWorkspace) {
 
-        if (!view.containerEl.contains(target)) {
-            return;
-        }
+            Psuedocode
+            // Handle things differently depending on the class of the target, each of these should update the 'handleBuffer'
+            if (targetClass === 'cm-callout') {
+                const parent = target.closest('callout');
+                get the lines the callout is on
+                this.handleBuffer = the data on the lines found
 
-        // Function checks for everything else first and cm-line last because everything has the cm-line class
-        if (targetName = 'cm-callout') {
-            console.log("Targeted: cm-callout on lines... don't know yet");
-            //this.createClone(target) BROKEN
-        } else if (targetName = 'HyperMD-codeblock') {
-            console.log("Targeted: codeblock (not actually yet)");
+                // ChatGPT did have this working at some point
+                place the handle at the midpoint of the callout
+                    find the lines, determine the height, and place it in the center?
+                    use decorations to prepend the symbol to the parent element (callout)?
+            } else if (targetClass === 'HyperMD-codeblock') {
+                const topParentLine = go up in divs to find the 'HyperMD-codeblock-beginning' (or whatever) and get the line its on
+                const bottomParentLine = go down in divs to find the 'HyperMD-codeblock-ending' (or whatever) and get the line its on
+                this.handleBuffer = all the data on those lines and between
+
+                place the handle at the midpoint of the codeblock
+                    find the lines, determine the height, and place it in the center?
+                    use decorations to prepend the symbol to the parent element (HyperMD-codeblock)? This might not work since its not a container
+            } else 
+            if (targetClass === 'cm-line') { // This should handle everything that is not grouped or a special case (may not handle images or embeded notes)
+                this.handleBuffer = target.getText();
+            } 
+
+            // No clue if this syntax is correct
+            // May need to append dragHandle
+            this.dragHandle.addEventListener("dragstart", (event : DragEvent) => this.handleHandler(event), true);
+        } else {
             return;
-        } else if (targetName = 'cm-line') {
-            console.log("Targeted: cm-line");
-            //this.createClone(target) BROKEN
-        }
+        }       
     }
 
-    hoverDeselect(event : MouseEvent) {
+    handleRemover (event : MouseEvent) {
         
     }
 
-    createClone(target : HTMLElement) {
+    // Handle the drag and drop of the handle
+    handleHandler(event : DragEvent) {
+
+        //this.createClone();
+
+        
+    }
+
+    // UNTESTED, creates a clone and appends it to the drag handle
+    createClone() {
         // Avoid creating multiple clones
         if (this.clone) {
-            this.clone.parentNode?.removeChild(this.clone);
-            console.log('Clone removed.')
+            this.clone.remove() // Needs to be changed if clone becomes a node
+            console.log('Clone copy removed.')
         }
 
-        // Clone the element as a node
-        target.style.opacity = '.2'
-        this.clone = target.cloneNode(true);
+        // Clone the element as an HTML Element
+        this.clone = document.createElement('span');
+        this.clone.id = 'clone'; // May not be needed
+        this.clone.className = 'drag-clone';
+        this.clone.innerText = this.handleBuffer;
 
         // Append the new node to the original node
-        target.appendChild(this.clone);
+        this.dragHandle.appendChild(this.clone);
         console.log('Clone created.')
     }
 }
+*/
 
 
 

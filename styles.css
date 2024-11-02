@@ -7,19 +7,27 @@ If your plugin does not need CSS, delete this file.
 
 */
 
-drag-handle {
+/* Not sure if this makes sense in terms of assigning the CSS, has to at least have the 'drag-handle' */
+.cm-line .cm-callout .drag-handle {
     /* position: absolute;
     top: 0;
     inset-inline-end: 0;
     height: 100%;
-    cursor: var(--cursor);
     padding-inline-end: 5px; */
+    cursor: grab;
     background-color: white;
+    display: inline-block;
+    
+}
+
+drag-clone {
+    opacity: .2;
+    border-radius: 20px;
 }
 
 
 
-/*
+/* ChatGPT's styles (originally implemented in the TS file)
 addHandle(clonedElement: HTMLElement) {
     // Create a drag handle
     this.handle = document.createElement('div');
