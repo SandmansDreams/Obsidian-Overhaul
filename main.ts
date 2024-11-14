@@ -28,7 +28,7 @@ export class HandleWidget extends WidgetType {
         handle.innerText = '≡';
         handle.className = 'drag-handle';
         handle.draggable = true;
-        handle.addEventListener('dragstart', handleDrag(event: DragEvent));
+        handle.addEventListener('dragstart', this.handleDrag(event: DragEvent));
         return handle;
     }
 }
