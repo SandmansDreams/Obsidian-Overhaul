@@ -1,50 +1,20 @@
-/*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
-
-/* Not sure if this makes sense in terms of assigning the CSS, has to at least have the 'drag-handle' */
-.cm-line .cm-callout .drag-handle {
-    /* position: absolute;
-    top: 0;
-    inset-inline-end: 0;
-    height: 100%;
-    padding-inline-end: 5px; */
-    cursor: grab;
-    background-color: white;
+.drag-handle {
+    content: '≡';
     display: inline-block;
-    
+    position: relative;
+    z-index: 1;
+    color: var(--text-color);
+    margin-right: 1px;
+    font: var(--font-interface-theme);
 }
 
-drag-clone {
+.handle-highlight {
     opacity: .2;
     border-radius: 20px;
 }
 
-
-
-/* ChatGPT's styles (originally implemented in the TS file)
-addHandle(clonedElement: HTMLElement) {
-    // Create a drag handle
-    this.handle = document.createElement('div');
-    this.handle.className = 'drag-handle';
-    this.handle.innerHTML = '&#x2630;';
-    this.handle.style.position = 'absolute';
-    this.handle.style.left = '-30px'; // Place the handle to the left of the element
-    this.handle.style.top = '50%';
-    this.handle.style.transform = 'translateY(-50%)'; // Center the handle vertically
-    this.handle.style.cursor = 'grab';
-    this.handle.style.fontSize = '14px';
-    this.handle.style.color = 'grey';
-    this.handle.style.backgroundColor = 'rgba(255,255,255,0.8)';
-    this.handle.style.borderRadius = '3px';
-    this.handle.style.zIndex = '1001'; // Above the cloned element
-
-    // Append the handle to the cloned element
-    clonedElement.appendChild(this.handle);
+.drag-clone {
+    opacity: .2;
+    border-radius: 20px;
+    font: var(--font-interface-theme);
 }
-*/
