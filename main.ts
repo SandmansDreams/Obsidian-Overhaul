@@ -20,18 +20,18 @@ export default class Blocks extends Plugin { // The main plugin class
                 const aboveLine: number = line - 1; // Gets the above line's number
                 const lineText: string = editor.getLine(line); // Gets the text on the line the cursor is on
                 const aboveLineText: string = editor.getLine(aboveLine); // Gets the text on the above line
-                const cursorPos: EditorPosition = editor.getCursor();
-                cursorPos.line = cursorPos.line - 1;
+                const cursorPos: EditorPosition = editor.getCursor(); // Gets the cursor position
+                cursorPos.line = cursorPos.line - 1; // Updates the cursor position to be on the line the current line shifts to
                 
-                if(line && aboveLine) {
+                if(line && aboveLine) { // Checks if there is a line the cursor is on and a line above
                     editor.setLine(line, aboveLineText); // Place the above line on the current line
                     editor.setLine(aboveLine, lineText); // Place the current line on the above line
-                    editor.setCursor(cursorPos);
+                    editor.setCursor(cursorPos); // Sets the cursor at its new position on the above line
                 } else {
                     return;
                 }
             }
-        })
+        });
     }
 
     async onunload() { // Things that will be unloaded when the plugin is disabled
