@@ -1,19 +1,34 @@
-.drag-handle {
-    content: '≡';
+.drag-handle { /* Styles for the handle span container, mostly taken from Obsidian */
     display: inline-block;
     position: relative;
-    z-index: 1;
+    z-index: 1; 
     color: var(--text-color);
-    margin-right: 1px;
     font: var(--font-interface-theme);
+    opacity: .5;
+    /* inset-inline-end: calc(var(--list-bullet-end-padding) * -1); */
+
 }
 
-.handle-highlight {
+.drag-handle:hover { /* Changes applied on handle hover */
+    opacity: 1;
+    transition: opacity 2s;
+}
+
+.drag-handle-indicator { /* Styles for the indicator itself, mostly taken from Obsidian */
+    content: '⠿';
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+    height: 100%;
+    cursor: var(--cursor);
+}
+
+.handle-highlight { /* Styles for denoting the area the handle is responsible for */
     opacity: .2;
     border-radius: 20px;
 }
 
-.drag-clone {
+.drag-clone { /* Styles for the preview of the dragged elements */
     opacity: .2;
     border-radius: 20px;
     font: var(--font-interface-theme);

@@ -1,42 +1,18 @@
-import { Plugin, Editor, MarkdownView, setIcon, addIcon, Menu } from 'obsidian';
+/* Where all the magic happens, establishment of the plugin class */
+
+import { Plugin, Editor, MarkdownView, setIcon, addIcon, Menu, MarkdownPostProcessorContext, FileView } from 'obsidian';
 import { gutter, GutterMarker, ViewPlugin, ViewUpdate, WidgetType, Decoration, DecorationSet, EditorView } from '@codemirror/view';
-import { StateField, StateEffect, RangeSet, RangeSetBuilder, EditorState, Facet, Extension } from "@codemirror/state";
+import { StateField, StateEffect, RangeSet, RangeSetBuilder, EditorState, Facet, Extension } from '@codemirror/state';
+import { syntaxTree } from '@codemirror/language';
+import { toUnicode } from 'punycode';
+import { HandleWidget } from './HandleWidget';
+import { liveViewPlugin } from './LiveViewPlugin';
 
-export class HandleWidget extends WidgetType { // Creates the drag handle class to be instanced
-		constructor(
-            readonly app: App, // Why is this needed?
-		    readonly view: EditorView,
-		    readonly from: number,
-		    readonly to: number
-		) {
-		    super(); // Also not sure why this is needed but it is required
-		}
-		
-	  eq(other: HandleWidget) { // Checks other widgets for being in the same place on the same doc and prevents duplicates
-		    return other.view === this.view && other.from === this.from && other.to === this.to;
-		}
-		
-		toDOM() { // Creates the widget's DOM element
-				const handle = document.createSpan("drag-handle");
-				setIcon(handle, "⠿");
-				//handle..addEventListener("click", (evt) => {
-			      //const menu = new Menu();;
-			  //}
-				//handle.registerDomEvent(document, 'dragstart', (event : DragEvent) => this.handleHandler(event), true);
-				return handle;
-		}
-		
-		ignoreEvent() { // Ensures no events should be ignored by the widget
-		    return false;
-	  }
-}
 
-export default class Blocks extends Plugin { // The main plugin class
-		return ViewPlugin.fromClass( class { // Defines view plugin?
-            decorations: DecorationSet = Decoration.none;
-	        allDecos: DecorationSet = Decoration.none;
-            decorator: MatchDecorator; // We don't want a match decorator, we want one of these on every line
-		}
+
+
+//export default class Blocks extends Plugin { // The main plugin class
+    
 		
 		
 		/*
@@ -123,4 +99,3 @@ export default class Blocks extends Plugin { // The main plugin class
         view.dispatch(transaction);
         
     }*/
-}
