@@ -6,14 +6,38 @@ import { StateField, StateEffect, RangeSet, RangeSetBuilder, EditorState, Facet,
 import { syntaxTree } from '@codemirror/language';
 import { toUnicode } from 'punycode';
 import { HandleWidget } from './HandleWidget';
-import { liveViewPlugin } from './LiveViewPlugin';
+import { createHandleViewPlugin } from './HandleViewPlugin';
 
 
 
 
-//export default class Blocks extends Plugin { // The main plugin class
-    
-		
+export default class Blocks extends Plugin { // The main plugin class
+    async onload() { // Things that happen on plugin load
+        console.log('Blocks Plugin Loaded') //REMOVE
+        this.initializeHandles();
+    }
+
+    async onunload() { // Things that will be unloaded when the plugin is disabled
+        console.log('Blocks Plugin Unoaded') //REMOVE
+    }
+
+    initializeHandles() { // Initializes the view plugin and handle widgets
+        this.registerEditorExtension([createHandleViewPlugin()]); // Registers the view plugin as an editor extension
+            this.registerMarkdownPostProcessor((element, context) => { // Registers a markdown post processor?
+                const foldIndicators = element.querySelectorAll('span.drag-handle-indicator') // Creates an array of the spans with class 'drag-handle-indicator
+
+                foldIndicators.forEach(fold => { // Iterates through the list of drag handle indicators
+                    if(fold.querySelector('span.drag-handle-indicator')) { // If there is an indicator there, don't do anything
+                        return;
+                    }
+
+                    const icon = createSpan({cls:  "drag-handle-indicator", text: "⠿"}); // Create the icon span
+
+                    fold.appendChild(icon); // Append the indicator to the span
+                })
+            })
+    }
+}
 		
 		/*
 		private dragHandle: HandleWidget;

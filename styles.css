@@ -4,7 +4,7 @@
     z-index: 1; 
     color: var(--text-color);
     font: var(--font-interface-theme);
-    opacity: .5;
+    opacity: .5; 
     /* inset-inline-end: calc(var(--list-bullet-end-padding) * -1); */
 
 }
@@ -12,15 +12,16 @@
 .drag-handle:hover { /* Changes applied on handle hover */
     opacity: 1;
     transition: opacity 2s;
-}
+} 
 
 .drag-handle-indicator { /* Styles for the indicator itself, mostly taken from Obsidian */
-    content: '⠿';
+    /* content: '⠿'; */
     position: absolute;
     top: 0;
     inset-inline-end: 0;
     height: 100%;
     cursor: var(--cursor);
+    /* opacity: .5; May be needed if the opacity does not carry over*/
 }
 
 .handle-highlight { /* Styles for denoting the area the handle is responsible for */
