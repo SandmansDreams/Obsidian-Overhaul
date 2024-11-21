@@ -15,7 +15,7 @@
 } 
 
 .drag-handle-indicator { /* Styles for the indicator itself, mostly taken from Obsidian */
-    /* content: '⠿'; */
+    content: '⠿';
     position: absolute;
     top: 0;
     inset-inline-end: 0;

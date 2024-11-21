@@ -18,24 +18,30 @@ export default class Blocks extends Plugin { // The main plugin class
     }
 
     async onunload() { // Things that will be unloaded when the plugin is disabled
-        console.log('Blocks Plugin Unoaded') //REMOVE
+        console.log('Blocks Plugin Unloaded') //REMOVE
     }
 
     initializeHandles() { // Initializes the view plugin and handle widgets
+        console.log('initializeHandles called');
         this.registerEditorExtension([createHandleViewPlugin()]); // Registers the view plugin as an editor extension
+            /* console.log('ViewPlugin registered');
             this.registerMarkdownPostProcessor((element, context) => { // Registers a markdown post processor?
-                const foldIndicators = element.querySelectorAll('span.drag-handle-indicator') // Creates an array of the spans with class 'drag-handle-indicator
-
+                console.log('markdownPostProcesser registered')
+                const foldIndicators = element.querySelectorAll('span.fold-indicator') // Creates an array of the spans with class 'drag-handle-indicator
+                console.log('All fold indicators found: ' + foldIndicators);
                 foldIndicators.forEach(fold => { // Iterates through the list of drag handle indicators
+                    console.log('Attempting to render handle before: ' + fold)
                     if(fold.querySelector('span.drag-handle-indicator')) { // If there is an indicator there, don't do anything
+                        console.log('Oops! Handle already there')
                         return;
                     }
 
-                    const icon = createSpan({cls:  "drag-handle-indicator", text: "⠿"}); // Create the icon span
+                    const icon = createSpan("drag-handle-indicator"); // Create the icon span
 
                     fold.appendChild(icon); // Append the indicator to the span
+                    console.log('Drag handle appended to fold indicator:' + icon + ' ' + fold);
                 })
-            })
+            }) */
     }
 }
 		
