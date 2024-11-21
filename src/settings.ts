@@ -1,2 +1,2 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import Blocks from "../main";
+import Blocks from "./main";

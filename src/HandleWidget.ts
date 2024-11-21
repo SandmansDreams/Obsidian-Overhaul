@@ -4,9 +4,14 @@ import { EditorView, WidgetType } from "@codemirror/view";
 
 export class HandleWidget extends WidgetType {
     toDOM(view: EditorView): HTMLElement {
-      const div = document.createElement('span');
-  
-      div.innerText = '👉';
+      const div = document.createElement('div');
+        
+      div.className = 'drag-handle';
+
+      div.innerText = '⠿';
+      //div.style.display = 'inline-block';
+
+
   
       return div;
     }

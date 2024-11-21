@@ -10,7 +10,6 @@ import {
   PluginValue,
   ViewPlugin,
   ViewUpdate,
-  WidgetType,
 } from '@codemirror/view';
 import { HandleWidget } from './HandleWidget';
 
@@ -33,7 +32,16 @@ class EmojiListPlugin implements PluginValue {
     const builder = new RangeSetBuilder<Decoration>();
 
     for (let { from, to } of view.visibleRanges) {
-      syntaxTree(view.state).iterate({
+        for (let pos = from; pos <= to; pos++ ) {
+            let line = view.state.doc.lineAt(pos);
+            builder.add(line.from, line.from, Decoration.widget({
+                widget: new HandleWidget(),
+                side: -1,
+            }));
+            pos = line.to + 1;
+        }
+      
+    /* syntaxTree(view.state).iterate({
         from,
         to,
         enter(node) {
@@ -50,7 +58,7 @@ class EmojiListPlugin implements PluginValue {
             );
           }
         },
-      });
+      }); */
     }
 
     return builder.finish();
