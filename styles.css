@@ -1,35 +1,60 @@
-.drag-handle { /* Styles for the handle span container, mostly taken from Obsidian */
+.drag-handle-indicator { /* Styles for the handle span container, mostly taken from Obsidian */
+    transition: .3s;
     display: inline-block;
     position: relative;
     z-index: 1; 
-    color: var(--text-color);
-    font: var(--font-interface-theme);
+    opacity: 1; 
+    width: 16px;
+    height: 16px; 
+    background-color: transparent;
+    border-radius: 0px;
+    padding: 1px;
+    margin-right: 5px;
     cursor: var(--cursor);
-    opacity: .5; 
-    /* inset-inline-end: calc(var(--list-bullet-end-padding) * -1); */
-
 }
 
-.drag-handle:hover { /* Changes applied on handle hover */
+.drag-handle-indicator:hover { /* When the handle is hovered, look ready to peel */
+    transition: .3s;
+    width: 16px;
+    height: 18px; 
+    background-color: var(--interactive-hover);
+    border-radius: 4px;
+}
+
+.drag-handle-indicator:hover .drag-handle-icon { /* When hovering over the icon itself, change the color */
+    color: var(--interactive-accent);
+    text-shadow: 1px 1px 1px #000000;
+}
+
+.drag-handle-icon { /* Styles for the indicator itself, mostly taken from Obsidian */
+    transition: .3s;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    color: var(--collapse-icon-color);
+    opacity: 0;
+    transform: translateY(-25%);
+    overflow: auto;
+    margin: auto;
+    padding: auto;
+    text-shadow: 0px 0px 0px #000000;
+}
+
+.cm-line:hover .drag-handle-icon { /* When the line is hovered, make the icon appear */
+    transition: .3s;
     opacity: 1;
-    transition: opacity .5s;
-} 
-
-.drag-handle-indicator { /* Styles for the indicator itself, mostly taken from Obsidian */
-    content: '⠿';
-    position: relative;
-    top: 0;
-    height: 100%;
-    /* opacity: .5; May be needed if the opacity does not carry over*/
 }
+
 
 .handle-highlight { /* Styles for denoting the area the handle is responsible for */
     opacity: .2;
     border-radius: 20px;
 }
 
-.drag-clone { /* Styles for the preview of the dragged elements */
-    opacity: .2;
-    border-radius: 20px;
-    font: var(--font-interface-theme);
-}
+/* .drag-clone { /* Styles for the preview of the dragged elements 
+    border-style: solid;
+    border: medium;
+    border-radius: 5px;
+    border-color: var(--interactive-accent);
+    background-color: var(--interactive-hover);
+} */
