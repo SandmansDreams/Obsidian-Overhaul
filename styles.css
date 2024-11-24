@@ -1,8 +1,57 @@
-/*
+.drop-zone-padding { /* Styles for the drop zone container, mostly taken from the Outliner Plugin */
+    position: absolute;
+    height: 4px;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.drop-zone { /* Styles for the drop zone, mostly taken from the Outliner Plugin */
+    width: 100%; /* May need to change to acutual value for spacing (300px) */
+    height: 4px;
+    background: var(--color-accent);
+    z-index: 1; /* May need to make higher */
+    position: absolute;
+    pointer-events: none;
+}
 
-If your plugin does not need CSS, delete this file.
+.drag-handle-indicator { /* Styles for the handle span container, mostly taken from Obsidian */
+    transition: .3s;
+    display: inline-block;
+    position: relative;
+    /* right: 16px; This works, but needs better implementation*/
+    z-index: 1; 
+    opacity: 1; 
+    width: 16px;
+    height: 18px; 
+    background-color: transparent;
+    border-radius: 0px;
+    padding: 1px;
+    margin-right: 5px;
+    cursor: var(--cursor);
+}
 
-*/
+.drag-handle-indicator:hover { /* When the handle is hovered, look ready to peel */
+    transition: .3s;
+    background-color: var(--interactive-hover);
+    border-radius: 4px;
+}
+
+.drag-handle-indicator:hover .drag-handle-icon { /* When hovering over the icon itself, change the color */
+    color: var(--interactive-accent);
+    text-shadow: 1px 1px 1px #000000;
+    transform: translateY(-28%);
+}
+
+.drag-handle-icon { /* Styles for the indicator itself, mostly taken from Obsidian */
+    transition: .3s;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    color: var(--collapse-icon-color);
+    opacity: 0;
+    transform: translateY(-25%);
+    text-shadow: 0px 0px 0px #000000;
+}
+
+.cm-line:hover .drag-handle-icon { /* When the line is hovered, make the icon appear */
+    transition: .3s;
+    opacity: 1;
+}
