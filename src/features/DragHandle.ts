@@ -17,7 +17,7 @@ export class DragHandle implements Feature { // The main feature class
     
     constructor ( 
         private plugin: Plugin,
-        //private view: EditorView,
+        private view: MarkdownView,
     ) {};
 
     async load() { 

@@ -10,9 +10,10 @@ import { DragHandle } from "./features/DragHandle";
 export default class NotionizePlugin extends Plugin { // The main plugin class
     //private extensions: Extension[]; // Establishes an array of editor extensions so they can be loaded all in one go
     private features: Feature[]; // Establishes an array of features so they can be loaded all in one go
+    dragHandle: DragHandle;
 
     async onload() { // What happens when plugin is loaded
-        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+        const view = this.app.workspace.getActiveViewOfType(MarkdownView) as MarkdownView;
         
         /* this.extensions = [ // Contains all the extensions that need to be loaded
             new DragHandleViewPlugin(
@@ -21,8 +22,9 @@ export default class NotionizePlugin extends Plugin { // The main plugin class
         ]; */
         
         this.features = [ // Contains all the features that need to be loaded
-            new DragHandle(
+            this.dragHandle = new DragHandle(
                 this, // Pass this plugin to the feature
+                view,
             ),
         ];
 

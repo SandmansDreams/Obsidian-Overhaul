@@ -1,18 +1,23 @@
-/* The DragHandle controller feature */
+/* The DragHandle controller feature 
+
+Cannot use a view plugin as it does not have access the the Editor and cannot make file changes even through widgets...
+*/
 
 // CodeMirror imports
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, } from '@codemirror/view';
 import { Extension, RangeSetBuilder, } from '@codemirror/state';
-import { Plugin, Editor, WorkspaceLeaf } from "obsidian";
+import { Plugin, Editor, WorkspaceLeaf, MarkdownView } from "obsidian";
 import { HandleWidget } from './DragHandleWidget';
 
 // View plugin
 class HandleViewPlugin { // View plugin class
     plugin: Plugin;
-    editor: Editor;
+    public editor: MarkdownView;
     decorations: DecorationSet;
 
     constructor(view: EditorView) { // Called on plugin load
+        this.editor = this.plugin.app.workspace.getActiveViewOfType(MarkdownView) as MarkdownView;
+        console.log('Editor: ' + this.editor);
         this.decorations = this.buildDecorations(view);
     }
 
@@ -46,7 +51,7 @@ class HandleViewPlugin { // View plugin class
             for (let pos = from; pos <= to; pos++ ) {
                 let line = view.state.doc.lineAt(pos);
                 builder.add(line.from, line.from, Decoration.widget({
-                    widget: new HandleWidget(line.number, this.plugin),
+                    widget: new HandleWidget(this.editor, line.number, this.plugin),
                     side: -1,
                     inlineOrder: true,
                 }));

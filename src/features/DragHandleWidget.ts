@@ -1,15 +1,16 @@
 /* The drag handle widget class */
 
-import { EditorView, lineNumbers, WidgetType, } from '@codemirror/view';
-import { Editor, EditorPosition, MarkdownView, Plugin, } from 'obsidian';
+import { EditorView, WidgetType, } from '@codemirror/view';
+import { MarkdownView, Plugin, } from 'obsidian';
 
 export class HandleWidget extends WidgetType { // Establishes the handle widget
     constructor( // Called when the widget is created
         //public leaf: WorkspaceLeaf,
-        public line: number,
+        protected view: MarkdownView,
+        protected line: number,
         /* public selectionStart: EditorPosition,
         public selectionEnd: EditorPosition, */
-        public plugin: Plugin,
+        protected plugin: Plugin,
     ) { 
         super();
     }
@@ -49,6 +50,7 @@ export class HandleWidget extends WidgetType { // Establishes the handle widget
                 // Set the data for the JS drag and drop API
                 //let selection = this.editor.getRange({line: this.line, ch: this.selectionStart}, {line: this.line, ch: this.selectionEnd});
                 event.dataTransfer?.setData('text/plain', view.state.doc.lineAt(this.line).text);
+                console.log('text saved to dataTransfer: ' + view.state.doc.lineAt(this.line).text);
                 event.dataTransfer?.setDragImage(parentEl, 0, parentEl.clientHeight/2);
             }
             // NOTE: Add implementation so the user can move, copy, or create a document heading link to the content
@@ -62,7 +64,7 @@ export class HandleWidget extends WidgetType { // Establishes the handle widget
             let newPos: number = view.posAtCoords(coords) as number;
             let newLine = view.state.doc.lineAt(newPos);
 
-            view.state.doc.replace(newLine.from, newLine.to, data);
+            //view.state.doc.replace(newLine.from, newLine.to, data);
             
             
             

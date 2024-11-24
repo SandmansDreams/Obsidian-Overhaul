@@ -1,11 +1,11 @@
 {
-	"id": "obsidian-blocks-plugin",
-	"name": "Sample Plugin",
+	"id": "notionize-plugin",
+	"name": "Notionize",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
+	"description": "Making Obsidian a little more like Notion.",
+	"author": "SandmansDreams",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }
