@@ -2,6 +2,7 @@
 
 // import { syntaxTree } from '@codemirror/language'; // Not currently needed
 // Import needed API's from CodeMirror, Obsidian and other files
+import { Editor } from 'obsidian';
 import { RangeSetBuilder } from '@codemirror/state';
 import { Decoration, DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpdate, } from '@codemirror/view';
 import { HandleWidget } from './HandleWidget';
@@ -9,7 +10,7 @@ import { HandleWidget } from './HandleWidget';
 class HandleViewPlugin implements PluginValue { // View plugin class
     decorations: DecorationSet;
 
-    constructor(view: EditorView) { // Called on plugin load
+    constructor(view: EditorView, readonly editor: Editor) { // Called on plugin load
         this.decorations = this.buildDecorations(view);
     }
 
@@ -37,14 +38,15 @@ class HandleViewPlugin implements PluginValue { // View plugin class
         - Want the content highlighted when the handle is hovered so you can visualize what you are about to move, could do this with clone
         */
        
-       const builder = new RangeSetBuilder<Decoration>();
+        
+        const builder = new RangeSetBuilder<Decoration>();
 
         for (let { from, to } of view.visibleRanges) {
             for (let pos = from; pos <= to; pos++ ) {
                 let line = view.state.doc.lineAt(pos);
                 let text = line.text;
                 builder.add(line.from, line.from, Decoration.widget({
-                    widget: new HandleWidget(line.number, line.from, text),
+                    widget: new HandleWidget(line.number, line.from, text, this.editor),
                     side: -1,
                     inlineOrder: true,
                 }));

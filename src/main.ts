@@ -12,6 +12,7 @@ export default class Blocks extends Plugin { // The main plugin class
         const editor = this.app.workspace.getActiveViewOfType(MarkdownView);
         
         this.initializeHandles();
+        this.handleDrag();
     }
 
     async onunload() { // Things that will be unloaded when the plugin is disabled
@@ -27,7 +28,9 @@ export default class Blocks extends Plugin { // The main plugin class
     }
     
     public handleDrag() {
-
+        this.registerDomEvent(document, 'dragover', (event) => {
+            
+        })
     }
 
     public handleClick() {

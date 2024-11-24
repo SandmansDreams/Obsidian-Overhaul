@@ -10,6 +10,7 @@ export class HandleWidget extends WidgetType {
         public line: number,
         public ch: number,
         public text: string,
+        readonly editor: Editor,
     ) {
         super();
     }
@@ -57,12 +58,22 @@ export class HandleWidget extends WidgetType {
             // NOTE: Add implementation so the user can move, copy, or create a document heading link to the content
         }
 
-        handleIndicator.ondragover = (event) => { // Drag event for creating a drop-zone preview and finding acceptable drops
+        handleIndicator.ondragenter = (event) => { // Drag event for creating a drop-zone preview and finding acceptable drops
             event.preventDefault; 
-            
+
+            document.addEventListener('mouseenter', function (ev) {
+                console.log()
+            });
+
+            const zone = event.target;
+            console.log(zone);
             // NOTE: Implement drop-zone preview
             //let hoveredNode = event.targetNode;
             //return;
+        }
+
+        handleIndicator.ondragleave = (event) => {
+            //event.preventDefault; 
         }
 
         handleIndicator.ondrop = (event) => { // Drop event for placing text
