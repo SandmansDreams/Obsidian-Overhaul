@@ -1,3 +1,11 @@
+
+
+
+.cm-highlight-todo {
+    background-color: var(--interactive-accent);
+    opacity: 0.2;
+}
+
 .drop-zone-padding { /* Styles for the drop zone container, mostly taken from the Outliner Plugin */
     position: absolute;
     height: 4px;
