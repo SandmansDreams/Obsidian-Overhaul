@@ -24,7 +24,7 @@ export class HoverBanding implements Feature {
     }
 
     applyHoverClass() {
-        const isEnabled = this.settings.enableHoverBand;
+        const isEnabled = this.settings.hoverBand;
         const isApplied = document.body.classList.contains(HOVER_BANDING_CLASS)
 
         if (isEnabled && !isApplied) {

@@ -15,7 +15,6 @@ export class DragHandle implements Feature { // Used to grab the load and unload
     
     constructor ( 
         private plugin: Plugin,
-        private view: MarkdownView,
     ) {};
 
     async load() { 
@@ -65,7 +64,7 @@ export class DragHandle implements Feature { // Used to grab the load and unload
     }
     
     removeDropZone() { // Removes the drop zone from the document
-        document.body.removeChild(this.dropZonePadding);
+        //document.body.removeChild(this.dropZonePadding);
         // @ts-ignore
         this.dropZonePadding = null;
         // @ts-ignore
@@ -207,7 +206,7 @@ class HandleViewPlugin { // View plugin class
         const builder = new RangeSetBuilder<Decoration>();
 
         for (let { from, to } of view.visibleRanges) {
-            for (let pos = from; pos <= to; pos++ ) {
+            for (let pos = from; pos <= to;) {
                 let line = view.state.doc.lineAt(pos);
                 builder.add(line.from, line.from, Decoration.widget({
                     widget: new HandleWidget(this.editor, line.number, this.plugin),

@@ -10,8 +10,10 @@ import { syntaxTree } from '@codemirror/language';
 import { Settings } from "./services/Settings";
 import { Feature } from "./features/Feature";
 import { DragHandle } from "./features/DragHandle";
-import { LineStripes } from "./features/ZebraStripes";
 import { HoverBanding } from "./features/HoverBanding";
+import { SettingsTab } from './features/SettingsTab';
+import { ZebraStripes } from './features/ZebraStripes';
+import { Logger } from './services/Logger';
 
 declare global {
     const PLUGIN_VERSION: string;
@@ -19,47 +21,38 @@ declare global {
 }
 
 export default class NotionizePlugin extends Plugin { // The main plugin class
-    private features: Feature[]; // Establishes an array of features so they can be loaded all in one go
+    private features: Feature[] = []; // Establishes an array of features so they can be loaded all in one go
     protected settings: Settings;
+    private logger: Logger;
 
     async onload() { // What happens when plugin is loaded
-        await this.prepSettings();
-        
         //const view = this.app.workspace.getActiveViewOfType(MarkdownView) as MarkdownView;
         
-        this.features = [ // Contains all the features that need to be loaded
-            new DragHandle(
-                this,
-                this.app.workspace.getActiveViewOfType(MarkdownView) as MarkdownView, // Does not work, disable later
-            ),
-            
-            new LineStripes(
-                this,
-            ),
+        await this.prepSettings();
+        
+        this.logger = new Logger(this.settings);
 
-            new HoverBanding(
-                this.settings,
-            )
+        this.features = [ // Contains all the features that need to be loaded
+            new SettingsTab( this, this.settings, ),
+            //new DragHandle( this ),
+            new ZebraStripes( this, this.settings, ),
+            //new HoverBanding( this.settings, ),
         ];
 
-        for (const feature of this.features) { // Load all features individually
-            await feature.load();
-        }
+        this.loadFeatures();
     }
 
     async onunload() { // What happens when plugin is unloaded
+        console.log('Unloading Notionize features...')
+        
         for (const feature of this.features) { // Unload all features individually
             await feature.unload();
         }
     }
-    
-    async loadEditorExtensions(extensions: Extension[]) { // Go through the list of extensions and load them individually
-        extensions.forEach(extension => {
-            this.registerEditorExtension(extension); // Can't use await on this, may need to 
-        });
-    }
 
     async loadFeatures() { // Go through the list of features and load them individually
+        console.log('Loading Notionize features...')
+        
         for (const feature of this.features) {
             await feature.load();
         }

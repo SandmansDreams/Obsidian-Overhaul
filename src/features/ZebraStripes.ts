@@ -1,43 +1,92 @@
-import * as exp from "constants";
-import { Feature } from "./Feature";
-import {  } from "@codemirror/language";
-import { Extension, Facet, RangeSet, RangeSetBuilder } from "@codemirror/state";
 import { Plugin } from "obsidian";
-import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, } from "@codemirror/view";
+import { Feature } from "./Feature";
+import { Settings } from "../services/Settings";
 
-let baseTheme: any; // NOTE: Not sure what type theme is...
-let stepSize: Facet<number, number>;
-let stripe: Decoration;
-let extensions: [];
+const ZEBRA_STRIPES_CLASS = 'notionize-zebra-stripes';
 
 // Feature Class
-export class LineStripes implements Feature {
+export class ZebraStripes implements Feature {
+    private isEnabled: boolean
+    private updateInterval: number
     
     constructor (
         private plugin: Plugin,
+        private settings: Settings,
+    ) {
+        this.isEnabled = this.settings.zebraStripes;
+    }
+
+    async load() {
+        this.updateStriping()
+        this.updateInterval = window.setInterval(() => {
+            this.updateStriping();
+        }, 1000);
+    }
+
+    async unload() {
+        clearInterval(this.updateInterval);
+        document.body.classList.remove(ZEBRA_STRIPES_CLASS);
+    }
+
+    private updateStriping = () => {
+        const exists = document.body.classList.contains(ZEBRA_STRIPES_CLASS);
+
+        if (this.isEnabled && !exists) {
+            document.body.classList.add(ZEBRA_STRIPES_CLASS);
+        }
+
+        if (!this.isEnabled && exists) {
+            document.body.classList.remove(ZEBRA_STRIPES_CLASS);
+        }
+    }
+}
+
+
+/*
+let baseTheme: any; // NOTE: Not sure what type theme is...
+let stepSize: Facet<number, number>;
+let stripe: Decoration;
+
+// Feature Class
+export class ZebraStripes implements Feature {
+    constructor (
+        private plugin: Plugin,
+        private settings: Settings,
     ) { }
 
     async load() {
-        stripe = Decoration.line({
-            attributes: {class: 'line-stripes'}
-        });
-
+        this.setDecoration();
         this.defineTheme();
         this.defineFacet();
 
-        //this.registerExtensions(extensions);
-        this.plugin.registerEditorExtension(stripes());
+        this.plugin.registerEditorExtension(stripes(this.settings.zebraStripes, 2));
     }
 
     async unload() {
 
     }
 
+    setDecoration() {
+        stripe = Decoration.line({
+            attributes: {class: 'notionize-zebra-stripe'}
+        });
+    }
+
     defineTheme() { // Defines the theme colors for each theme type
-        baseTheme = EditorView.baseTheme({
-            "&light .cm-zebraStripe": {backgroundColor: "#d4fafa"},
-            "&dark .cm-zebraStripe": {backgroundColor: "#1a2727"}
-        })
+        let documentTree = this.plugin.app.workspace.containerEl.parentElement?.parentElement?.parentElement?.parentElement; // NOTE: Find a better way to do this check
+        //console.log(documentTree);
+        
+        switch (documentTree?.classList.contains('theme-dark')) {
+            case true:
+                baseTheme = EditorView.baseTheme({ "&dark .notionize-zebra-stripe": {backgroundColor: "#1a2727"}});
+                break;
+            case false:
+                baseTheme = EditorView.baseTheme({ "&light .notionize-zebra-stripe": {backgroundColor: "#d4fafa"}});
+                break;
+            default:
+                baseTheme = EditorView.baseTheme({ "&dark .notionize-zebra-stripe": {backgroundColor: "#1a2727"}});
+        }
+
     }
 
     defineFacet() { // Defines a facet with default value 2 to determine step size
@@ -45,35 +94,33 @@ export class LineStripes implements Feature {
             combine: values => values.length ? Math.min(...values) : 2
         })
     }
-
-    registerExtensions(extensions: []) {
-        extensions.forEach(element => {
-            this.plugin.registerEditorExtension(element);
-        });
-    }
 }
 
 // View Plugin
-const showStripes = ViewPlugin.fromClass(class {
-    decorations: DecorationSet
+const showStripes = (isEnabled: boolean) => ViewPlugin.fromClass(class {
+    decorations: DecorationSet;
 
     constructor(view: EditorView) {
-        this.decorations = this.stripeDeco(view);
+        this.decorations = this.stripeDeco(view, isEnabled);
     }
 
     update(update: ViewUpdate) {
         if (update.docChanged || update.viewportChanged) {
-            this.decorations = this.stripeDeco(update.view)
+            this.decorations = this.stripeDeco(update.view, isEnabled)
         }
     }
 
-    stripeDeco(view: EditorView) {
+    stripeDeco(view: EditorView, enabled: boolean) {
+        if (!enabled) {
+            return Decoration.none;
+        }
+        
         let step = view.state.facet(stepSize)
         let builder = new RangeSetBuilder<Decoration>()
         for (let {from, to} of view.visibleRanges) {
-          for (let pos = from; pos <= to;) {
+          for (let pos = from; pos < to;) {
             let line = view.state.doc.lineAt(pos);
-            if ((line.number % step) == 0) {
+            if ((line.number % step) === 0) {
                 builder.add(line.from, line.from, stripe);
             }
             pos = line.to + 1;
@@ -81,15 +128,18 @@ const showStripes = ViewPlugin.fromClass(class {
         }
         return builder.finish();
     }
+
+    destroy() {}
 }, {
     decorations: v => v.decorations
 })
 
 // Export the extension as a plugin
-function stripes(options: {step?: number} = {}): Extension { // Returns the extension to the plugin
+function stripes(isEnabled: boolean, step?: number): Extension { // Returns the extension to the plugin
     return [
         baseTheme,
-        options.step == null ? [] : stepSize.of(options.step), // Defines the default step size if nothing is provided
-        showStripes,
-    ]
+        step == null ? [] : stepSize.of(step), // Defines the default step size if nothing is provided
+        showStripes(isEnabled),
+    ];
 }
+*/

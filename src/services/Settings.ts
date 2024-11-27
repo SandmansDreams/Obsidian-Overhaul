@@ -1,14 +1,14 @@
-/* NOTE: MOSTLY OUTLINER CODE */
-
 interface SettingsObject { // Establishes a set of settings and their values
-    enableHoverBand: boolean,
-    dnd: boolean,
-    debug: boolean,
+  dragHandles: boolean,
+  hoverBand: boolean,
+  zebraStripes: boolean,
+  debug: boolean,
 }
 
 const DEFAULT_SETTINGS: SettingsObject = { // Sets the default setting values
-  enableHoverBand: false,
-  dnd: false,
+  dragHandles: false,
+  hoverBand: false,
+  zebraStripes: false,
   debug: false,
 };
 
@@ -26,22 +26,32 @@ export class Settings {
 
   constructor(storage: Storage) {
     this.storage = storage;
+    this.callbacks = new Set();
+  }
+  
+  get dragHandles() {
+    return this.values.dragHandles;
   }
 
-  get enableHoverBand() {
-    return this.values.enableHoverBand;
+  set dragHandles(value: boolean) {
+    this.set("dragHandles", value);
   }
 
-  set enableHoverBand(value: boolean) {
-    this.set('enableHoverBand', value);
+  get hoverBand() {
+    return this.values.hoverBand;
   }
 
-  get dragAndDrop() {
-    return this.values.dnd;
+  set hoverBand(value: boolean) {
+    this.set('hoverBand', value);
   }
 
-  set dragAndDrop(value: boolean) {
-    this.set("dnd", value);
+  get zebraStripes() {
+    return this.values.zebraStripes;
+  }
+
+  set zebraStripes(value: boolean) {
+    this.set("zebraStripes", value);
+    console.log('Zebra Stripes toggled to ' + value);
   }
 
   get debug() {
@@ -52,12 +62,12 @@ export class Settings {
     this.set("debug", value);
   }
 
-  onChange(cb: Callback) {
-    this.callbacks.add(cb);
+  onChange(callback: Callback) { // When the settings change, add the callback function to the set
+    this.callbacks.add(callback);
   }
 
-  removeCallback(cb: Callback): void {
-    this.callbacks.delete(cb);
+  removeCallback(callback: Callback): void { // Remove the callback from the set
+    this.callbacks.delete(callback);
   }
 
   reset() {
@@ -82,14 +92,11 @@ export class Settings {
     return { ...this.values };
   }
 
-  private set<T extends keyof SettingsObject>(
-    key: T,
-    value: SettingsObject[T],
-  ): void {
-    this.values[key] = value;
-
-    for (const cb of this.callbacks) {
-      cb();
+  private set<T extends keyof SettingsObject>( key: T, value: SettingsObject[T], ): void {
+    this.values[key] = value; // Update the value in `this.values`
+  
+    for (const callback of this.callbacks) { // Notify all registered callbacks of the change
+      callback(); // Call each callback function
     }
   }
 }
