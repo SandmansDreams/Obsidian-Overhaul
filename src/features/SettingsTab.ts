@@ -10,15 +10,9 @@ export class SettingsTab implements Feature {
     ) { }
     
     async load() {
-        this.plugin.addSettingTab(
-            new NotionizePluginSettingsTab(
-                this.plugin,
-                this.plugin.app,
-                this.settings,
-            ),
-
-        );
+        this.plugin.addSettingTab(new NotionizePluginSettingsTab(this.plugin, this.plugin.app, this.settings));
     }
+    
     async unload() { }
 }
 
@@ -44,9 +38,8 @@ class NotionizePluginSettingsTab extends PluginSettingTab {
                     .setValue(this.settings.dragHandles)
                     .onChange(async (value) => {
                         this.settings.dragHandles = value;
-                        console.log('Handle Toggle: ' + toggle);
-                    await this.settings.save();
-                });
+                        await this.settings.save();
+                    });
             });
 
         new Setting(containerEl)
@@ -57,8 +50,8 @@ class NotionizePluginSettingsTab extends PluginSettingTab {
                     .setValue(this.settings.hoverBand)
                     .onChange(async (value) => {
                         this.settings.hoverBand = value;
-                    await this.settings.save();
-                });
+                        await this.settings.save();
+                    });
             });
 
         new Setting(containerEl)
@@ -69,8 +62,8 @@ class NotionizePluginSettingsTab extends PluginSettingTab {
                     .setValue(this.settings.zebraStripes)
                     .onChange(async (value) => {
                         this.settings.zebraStripes = value;
-                    await this.settings.save();
-                });
+                        await this.settings.save();
+                    });
             });
 
         new Setting(containerEl)
@@ -81,8 +74,8 @@ class NotionizePluginSettingsTab extends PluginSettingTab {
                     .setValue(this.settings.debug)
                     .onChange(async (value) => {
                         this.settings.debug = value;
-                    await this.settings.save();
-                });
+                        await this.settings.save();
+                    });
             });
     }
 }

@@ -1,4 +1,3 @@
-import { Plugin } from "obsidian";
 import { Feature } from "./Feature";
 import { Settings } from "../services/Settings";
 
@@ -7,42 +6,36 @@ const ZEBRA_STRIPES_CLASS = 'notionize-zebra-stripes';
 // Feature Class
 export class ZebraStripes implements Feature {
     private isEnabled: boolean
-    private updateInterval: number
     
     constructor (
-        private plugin: Plugin,
         private settings: Settings,
-    ) {
-        this.isEnabled = this.settings.zebraStripes;
-    }
+    ) { }
 
     async load() {
-        this.updateStriping()
-        this.updateInterval = window.setInterval(() => {
-            this.updateStriping();
-        }, 1000);
+        this.settings.onChange(this.updateStriping);
+        this.updateStriping();
     }
 
     async unload() {
-        clearInterval(this.updateInterval);
+        this.settings.removeCallback(this.updateStriping);
         document.body.classList.remove(ZEBRA_STRIPES_CLASS);
     }
 
     private updateStriping = () => {
-        const exists = document.body.classList.contains(ZEBRA_STRIPES_CLASS);
+        this.isEnabled = this.settings.zebraStripes;
+        const isApplied = document.body.classList.contains(ZEBRA_STRIPES_CLASS);
 
-        if (this.isEnabled && !exists) {
+        if (this.isEnabled && !isApplied) {
             document.body.classList.add(ZEBRA_STRIPES_CLASS);
         }
 
-        if (!this.isEnabled && exists) {
+        if (!this.isEnabled && isApplied) {
             document.body.classList.remove(ZEBRA_STRIPES_CLASS);
         }
     }
 }
 
-
-/*
+/* VERSION USING VIEW PLUGIN, DO SOME TESTING TO SEE IF NEEDED
 let baseTheme: any; // NOTE: Not sure what type theme is...
 let stepSize: Facet<number, number>;
 let stripe: Decoration;

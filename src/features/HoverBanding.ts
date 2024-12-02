@@ -1,42 +1,35 @@
 import { Feature } from "./Feature";
 import { Settings } from "../services/Settings";
 
-const HOVER_BANDING_CLASS = '.cm-line:hover';
+const HOVER_BANDING_CLASS = 'notionize-hover-banding';
 
 export class HoverBanding implements Feature {
-    private updateInterval: number;
-    
+    private isEnabled: boolean
+
     constructor (
         private settings: Settings,
     ) { }
 
     async load() {
-        this.applyHoverClass();
-
-        this.updateInterval = window.setInterval(() => { // Sets the update interval to check for changes to the body class
-            this.applyHoverClass();
-        }, 1000);
+        this.settings.onChange(this.updateHoverClass);
+        this.updateHoverClass();
     }
 
     async unload() {
-        clearInterval(this.updateInterval);
-        this.removeHoverClass();
+        this.settings.removeCallback(this.updateHoverClass);
+        document.body.classList.remove(HOVER_BANDING_CLASS);
     }
 
-    applyHoverClass() {
-        const isEnabled = this.settings.hoverBand;
+    private updateHoverClass = () => {
+        this.isEnabled = this.settings.hoverBand;
         const isApplied = document.body.classList.contains(HOVER_BANDING_CLASS)
 
-        if (isEnabled && !isApplied) {
+        if (this.isEnabled && !isApplied) {
             document.body.classList.add(HOVER_BANDING_CLASS);
         }
 
-        if (!isEnabled && isApplied) {
-            this.removeHoverClass();
+        if (!this.isEnabled && isApplied) {
+            document.body.classList.remove(HOVER_BANDING_CLASS);
         }
-    }
-
-    removeHoverClass() {
-        document.body.classList.remove(HOVER_BANDING_CLASS);
     }
 }

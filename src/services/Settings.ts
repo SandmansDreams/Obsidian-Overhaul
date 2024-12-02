@@ -51,7 +51,6 @@ export class Settings {
 
   set zebraStripes(value: boolean) {
     this.set("zebraStripes", value);
-    console.log('Zebra Stripes toggled to ' + value);
   }
 
   get debug() {
@@ -71,8 +70,8 @@ export class Settings {
   }
 
   reset() {
-    for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) {
-      this.set(k as keyof SettingsObject, v);
+    for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
+      this.set(key as keyof SettingsObject, value);
     }
   }
 
@@ -93,10 +92,9 @@ export class Settings {
   }
 
   private set<T extends keyof SettingsObject>( key: T, value: SettingsObject[T], ): void {
-    this.values[key] = value; // Update the value in `this.values`
-  
-    for (const callback of this.callbacks) { // Notify all registered callbacks of the change
-      callback(); // Call each callback function
+    this.values[key] = value;
+    for (const cb of this.callbacks) {
+      cb();
     }
   }
 }

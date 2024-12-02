@@ -11,7 +11,7 @@
     background-color: var(--color-base-10);
 }
 
-.cm-line:hover {
+.notionize-hover-banding .cm-line:hover {
     transition: background-color var(--notionize-banding-transition-time);
     background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
     border-radius: 4px;
