@@ -1,4 +1,4 @@
-interface SettingsObject { // Establishes a set of settings and their values
+interface SettingsObject { // Establishes a set of settings and their possible values
   dragHandles: boolean,
   hoverBand: boolean,
   zebraStripes: boolean,
