@@ -1,16 +1,9 @@
-/* 
-Create a new way to establish settings
-    Should pass in name, description, type (Category or Normal), and subtype
-use display() to create all the setting elements
-*/
+/* The setting tab and menu establishment */
 
-
-import { App, Plugin, PluginSettingTab, Setting, Component, TextComponent, ButtonComponent, DropdownComponent, ColorComponent, SearchComponent, debounce, Vault } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting, setIcon, Component, TextComponent, ButtonComponent, DropdownComponent, ColorComponent, SearchComponent, debounce, Vault } from "obsidian";
 
 import { Feature, } from "./Feature";
 import { Settings, } from "../services/Settings";
-import { FeatureSetting } from "src/services/FeatureComponent";
-import { isNativeError } from "util/types";
 
 type Callback = () => void;
 
@@ -52,6 +45,7 @@ class NotionizePluginSettingsTab extends PluginSettingTab { // Handles the setti
         hoverMainEl.addClass('notionize-feature-main-el');
         const hoverChildEl = hoverFeatureEl.createDiv();
         hoverChildEl.addClass('notionize-child-settings');
+        let hoverBandingCollapse: HTMLElement;
 
         const hoverBandingFeature = new Setting(hoverMainEl)
             .setName('Hover Banding')
@@ -62,10 +56,27 @@ class NotionizePluginSettingsTab extends PluginSettingTab { // Handles the setti
                     .onChange(async (value) => {
                         this.settings.hoverBand = value;
                         await this.settings.save();
+                        if (value) {
+                            hoverBandingCollapse = this.createCollapseIndicator(hoverBandingFeature);
+                            hoverBandingCollapse.addEventListener('click', () => {
+                                this.toggleCollapse(hoverBandingCollapse, hoverChildEl);
+                                this.toggleChildren(hoverChildEl);
+                            })
+                            hoverBandingFeature.settingEl.prepend(hoverBandingCollapse);
+                            this.toggleCollapse(hoverBandingCollapse, hoverChildEl);
+                        } else {
+                            hoverBandingCollapse.removeEventListener('click', () => {
+                                this.toggleCollapse(hoverBandingCollapse, hoverChildEl);
+                                this.toggleChildren(hoverChildEl);
+                            })
+                            hoverBandingCollapse.remove();
+                        }
                         this.toggleChildren(hoverChildEl, value);
                     })
                     this.toggleChildren(hoverChildEl, toggle.getValue());
             })
+        
+
 
         const hoverBandingOpacity = new Setting(hoverChildEl)
             .setName('Opacity')
@@ -180,7 +191,26 @@ class NotionizePluginSettingsTab extends PluginSettingTab { // Handles the setti
         containerEl.createEl('h2', { text: "Other:"});
     }
 
-    toggleChildren(element: HTMLElement, value: boolean) {
-        element.toggle(value);
+    private toggleChildren(element: HTMLElement, value?: boolean) {
+        if (value) {
+            element.toggle(value);
+        } else {
+            const newVal = !element.isShown();
+            element.toggle(newVal);
+        }
+    }
+
+    private toggleCollapse(element: HTMLElement, collapsibleElement: HTMLElement, value?: boolean) {
+        if (collapsibleElement.isShown()) {
+            element.style.transform = 'rotate(-90deg)';
+        } else {
+            element.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    private createCollapseIndicator(setting: Setting) {
+        const iconContainer = createSpan();
+        setIcon(iconContainer, 'right-triangle');
+        return iconContainer;
     }
 }

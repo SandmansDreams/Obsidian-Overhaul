@@ -6,7 +6,9 @@
 /* Settings */
 .notionize-feature-main-el {
     background-color: var(--background-modifier-form-field);
-    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
     border-radius: 5px;
 }
 
@@ -15,8 +17,9 @@
 }
 
 .notionize-child-settings {
-    padding: 10px;
-    padding-left: 40px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 10px;
     background-color: var(--color-base-10);
     border-radius: 5px;
 }
