@@ -1,21 +1,21 @@
 interface SettingsObject { // Establishes a set of settings and their possible values
-  hoverBand: boolean,
-  hoverBandOpacity: number,
-  hoverBandColor: string,
+  hoverBanding: boolean,
+  hoverBandingOpacity: number,
+  hoverBandingColor: string,
   zebraStripes: boolean,
   zebraStripesOpacity: number,
   zebraStripesColor: string,
-  dragHandles: boolean,
+  dragHandle: boolean,
 }
 
 const DEFAULT_SETTINGS: SettingsObject = { // Sets the default setting values
-  hoverBand: false,
-  hoverBandOpacity: 20,
-  hoverBandColor: 'var(--color-accent)',
+  hoverBanding: false,
+  hoverBandingOpacity: 20,
+  hoverBandingColor: 'var(--color-accent)',
   zebraStripesOpacity: 20,
   zebraStripesColor: 'var(--color-base-10)',
   zebraStripes: false,
-  dragHandles: false,
+  dragHandle: false,
 };
 
 export interface Storage { // Establishes a storage to save and load setting data
@@ -37,28 +37,28 @@ export class Settings { // The class that handles our settings
   
 
   // Hover Band
-  get hoverBand() {
-    return this.values.hoverBand;
+  get hoverBanding() {
+    return this.values.hoverBanding;
   }
   
-  set hoverBand(value: boolean) {
-    this.set('hoverBand', value);
+  set hoverBanding(value: boolean) {
+    this.set('hoverBanding', value);
   }
 
-  get hoverBandOpacity() {
-    return this.values.hoverBandOpacity;
+  get hoverBandingOpacity() {
+    return this.values.hoverBandingOpacity;
   }
   
-  set hoverBandOpacity(value: number) {
-    this.set('hoverBandOpacity', value);
+  set hoverBandingOpacity(value: number) {
+    this.set('hoverBandingOpacity', value);
   }
 
-  get hoverBandColor() {
-    return this.values.hoverBandColor;
+  get hoverBandingColor() {
+    return this.values.hoverBandingColor;
   }
   
-  set hoverBandColor(value: string) {
-    this.set('hoverBandColor', value);
+  set hoverBandingColor(value: string) {
+    this.set('hoverBandingColor', value);
   }
   
 
@@ -89,14 +89,15 @@ export class Settings { // The class that handles our settings
   
   
   // Drag Handles
-  get dragHandles() {
-    return this.values.dragHandles;
+  get dragHandle() {
+    return this.values.dragHandle;
   }
 
-  set dragHandles(value: boolean) {
-    this.set("dragHandles", value);
+  set dragHandle(value: boolean) {
+    this.set("dragHandle", value);
   }
   
+  // 
   onChange(callback: Callback) { // When the settings change, add the callback function to the set
     this.callbacks.add(callback);
   }
