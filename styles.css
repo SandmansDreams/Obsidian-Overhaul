@@ -1,8 +1,27 @@
-:root {
-    --notionize-handle-transition-time: .3s;
+:root { /* Establishes variables */
     --notionize-banding-transition-time: .1s;
+    --notionize-handle-transition-time: .3s;
 }
 
+/* Settings */
+.notionize-feature-main-el {
+    background-color: var(--background-modifier-form-field);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.notionize-feature-setting {
+    margin-bottom: 10px;
+}
+
+.notionize-child-settings {
+    padding: 10px;
+    padding-left: 40px;
+    background-color: var(--color-base-10);
+    border-radius: 5px;
+}
+
+/* Zebra Stripes */
 .notionize-zebra-stripes .cm-line:nth-child(even) {
     background-color: var(--color-base-10);
 }
@@ -11,17 +30,22 @@
     background-color: var(--color-base-10);
 }
 
+
+/* Hover Banding */
 .notionize-hover-banding .cm-line:hover {
     transition: background-color var(--notionize-banding-transition-time);
     background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
     border-radius: 4px;
 }
 
-.cm-highlight-todo {
-    background-color: var(--interactive-accent);
-    opacity: 0.2;
+.notionize-hover-banding .HyperMD-quote.cm-line:hover {
+    transition: background-color var(--notionize-banding-transition-time);
+    background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    border-radius: 4px;
 }
 
+
+/* Drag Handle */
 .drop-zone-padding { /* Styles for the drop zone container, mostly taken from the Outliner Plugin */
     position: absolute;
     height: 4px;
@@ -79,3 +103,9 @@
     transition: var(--notionize-handle-transition-time);
     opacity: 1;
 }
+
+
+/* .cm-highlight-todo {
+    background-color: var(--interactive-accent);
+    opacity: 0.2;
+} */

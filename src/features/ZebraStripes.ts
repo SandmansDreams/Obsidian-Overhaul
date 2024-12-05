@@ -1,3 +1,10 @@
+/* TODO
+- Make a color selector for stripes and better default colors for the stripes
+- Add visual functionality for:
+  - Inline Quotes
+  - Callouts
+*/
+
 import { Feature } from "./Feature";
 import { Settings } from "../services/Settings";
 
@@ -5,8 +12,6 @@ const ZEBRA_STRIPES_CLASS = 'notionize-zebra-stripes';
 
 // Feature Class
 export class ZebraStripes implements Feature {
-    private isEnabled: boolean
-    
     constructor (
         private settings: Settings,
     ) { }
@@ -22,14 +27,14 @@ export class ZebraStripes implements Feature {
     }
 
     private updateStriping = () => {
-        this.isEnabled = this.settings.zebraStripes;
+        const isEnabled = this.settings.zebraStripes;
         const isApplied = document.body.classList.contains(ZEBRA_STRIPES_CLASS);
 
-        if (this.isEnabled && !isApplied) {
+        if (isEnabled && !isApplied) {
             document.body.classList.add(ZEBRA_STRIPES_CLASS);
         }
 
-        if (!this.isEnabled && isApplied) {
+        if (!isEnabled && isApplied) {
             document.body.classList.remove(ZEBRA_STRIPES_CLASS);
         }
     }

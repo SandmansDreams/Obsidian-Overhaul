@@ -7,12 +7,12 @@ import { StateField, StateEffect, RangeSet, RangeSetBuilder, EditorState, Facet,
 import { syntaxTree } from '@codemirror/language';
 
 // Internal Imports
-import { Settings } from "./services/Settings";
 import { Feature } from "./features/Feature";
-import { DragHandle } from "./features/DragHandle";
-import { HoverBanding } from "./features/HoverBanding";
+import { Settings } from "./services/Settings";
 import { SettingsTab } from './features/SettingsTab';
+import { HoverBanding } from "./features/HoverBanding";
 import { ZebraStripes } from './features/ZebraStripes';
+import { DragHandle } from "./features/DragHandle";
 
 declare global {
     const PLUGIN_VERSION: string;
@@ -28,9 +28,9 @@ export default class NotionizePlugin extends Plugin { // The main plugin class
 
         this.features = [ // Contains all the features that need to be loaded
             new SettingsTab( this, this.settings, ),
-            //new DragHandle( this ),
-            new ZebraStripes( this.settings, ),
             new HoverBanding( this.settings, ),
+            new ZebraStripes( this.settings, ),
+            //new DragHandle( this ),
         ];
 
         this.loadFeatures();
