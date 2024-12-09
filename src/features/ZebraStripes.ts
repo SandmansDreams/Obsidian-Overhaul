@@ -1,4 +1,5 @@
 /* TODO
+- Convert to using view plugin as the CSS re-renders for only visible lines and does not take into account line numbers
 - Make a color selector for stripes and better default colors for the stripes
 - Add visual functionality for:
   - Inline Quotes
