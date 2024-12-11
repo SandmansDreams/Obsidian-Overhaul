@@ -8,7 +8,7 @@ import { syntaxTree } from '@codemirror/language';
 
 // Internal Imports
 import { Feature } from "./features/Feature";
-import { Settings } from "./services/Settings";
+import { Settings } from "./settings/Settings";
 import { SettingsTab } from './features/SettingsTab';
 import { HoverBanding } from "./features/HoverBanding";
 import { ZebraStripes } from './features/ZebraStripes';

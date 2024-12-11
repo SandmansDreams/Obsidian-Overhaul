@@ -1,12 +1,7 @@
-/* TODO
-- Make a color selector for the hover box
-- Add visual functionality for:
-  - Inline Quotes
-  - Callouts
-*/
+/* Changes the background of the line currently hovered over with the mouse */
 
 import { Feature } from "./Feature";
-import { Settings } from "../services/Settings";
+import { Settings } from "../settings/Settings";
 
 const HOVER_BANDING_CLASS = 'notionize-hover-banding';
 
@@ -25,9 +20,17 @@ export class HoverBanding implements Feature {
         document.body.classList.remove(HOVER_BANDING_CLASS);
     }
 
-    private updateHoverClass = () => {
-        const isEnabled = this.settings.hoverBand;
-        const isApplied = document.body.classList.contains(HOVER_BANDING_CLASS)
+    private updateHoverClass = () => { // Update all parts of the hover banding settings
+        const isEnabled = this.settings.getSetting('hoverBanding');
+        const isApplied = document.body.classList.contains(HOVER_BANDING_CLASS);
+
+        let newTime = this.settings.getSetting('hoverBandingTransitionTime') as string;
+        const newColor = this.settings.getSetting('hoverBandingColor');
+        
+        document.body.style.setProperty('--notionize-hover-banding-transition-time', (newTime + 's') as string);
+        console.log('banding transition ' + newTime + 's');
+        document.body.style.setProperty('--notionize-hover-banding-color', newColor);
+        console.log('banding color ' + newColor);
 
         if (isEnabled && !isApplied) {
             document.body.classList.add(HOVER_BANDING_CLASS);

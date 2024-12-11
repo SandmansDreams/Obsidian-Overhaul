@@ -1,9 +1,17 @@
 :root { /* Establishes variables */
-    --notionize-banding-transition-time: .1s;
+    /* Hover Banding */
+    --notionize-hover-banding-transition-time: .2s;
+    --notionize-hover-banding-color: var(--color-accent);
+
+    /* Zebra Stripes */
+    --notionize-zebra-stripes-color: var(--collapse-icon-color);
+
+    /* Drag Handle */
     --notionize-handle-transition-time: .3s;
 }
 
-/* Settings */
+
+/* SettingsTab */
 .notionize-feature-main-el {
     background-color: var(--background-modifier-form-field);
     padding-left: 15px;
@@ -24,27 +32,28 @@
     border-radius: 5px;
 }
 
-/* Zebra Stripes */
-.notionize-zebra-stripes .cm-line:nth-child(even) {
-    background-color: var(--color-base-10);
-}
-
-.notionize-zebra-stripes .cm-gutterElement:nth-child(odd) {
-    background-color: var(--color-base-10);
-}
-
 
 /* Hover Banding */
 .notionize-hover-banding .cm-line:hover {
     transition: background-color var(--notionize-banding-transition-time);
-    background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    background-color: var(--notionize-hover-banding-color);
     border-radius: 4px;
 }
 
 .notionize-hover-banding .HyperMD-quote.cm-line:hover {
     transition: background-color var(--notionize-banding-transition-time);
-    background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    background-color: var(--notionize-hover-banding-color);
     border-radius: 4px;
+}
+
+
+/* Zebra Stripes */
+.notionize-zebra-stripes .cm-line:nth-child(even) {
+    background-color: var(--notionize-zebra-stripes-color);
+}
+
+.notionize-zebra-stripes .cm-gutterElement:nth-child(odd) {
+    background-color: var(--notionize-zebra-stripes-color);
 }
 
 

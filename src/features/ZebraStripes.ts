@@ -7,7 +7,7 @@
 */
 
 import { Feature } from "./Feature";
-import { Settings } from "../services/Settings";
+import { Settings } from "../settings/Settings";
 
 const ZEBRA_STRIPES_CLASS = 'notionize-zebra-stripes';
 

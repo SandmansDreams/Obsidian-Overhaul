@@ -1,20 +1,26 @@
-interface SettingsObject { // Establishes a set of settings and their possible values
+export interface SettingsObject { // Establishes a set of settings and their possible values
   hoverBanding: boolean,
   hoverBandingOpacity: number,
   hoverBandingColor: string,
+  hoverBandingTransitionTime: string,
+
   zebraStripes: boolean,
   zebraStripesOpacity: number,
   zebraStripesColor: string,
+
   dragHandle: boolean,
 }
 
 const DEFAULT_SETTINGS: SettingsObject = { // Sets the default setting values
   hoverBanding: false,
   hoverBandingOpacity: 20,
-  hoverBandingColor: 'var(--color-accent)',
-  zebraStripesOpacity: 20,
-  zebraStripesColor: 'var(--color-base-10)',
+  hoverBandingColor: 'var(--notionize-hover-banding-color)',
+  hoverBandingTransitionTime: '.2s',
+
   zebraStripes: false,
+  zebraStripesOpacity: 20,
+  zebraStripesColor: 'var(--notionize-zebra-stripes-color)',
+
   dragHandle: false,
 };
 
@@ -34,70 +40,15 @@ export class Settings { // The class that handles our settings
     this.storage = storage;
     this.callbacks = new Set();
   }
-  
-
-  // Hover Band
-  get hoverBanding() {
-    return this.values.hoverBanding;
-  }
-  
-  set hoverBanding(value: boolean) {
-    this.set('hoverBanding', value);
+   
+  getSetting(featureName: keyof SettingsObject) {
+    return this.values[featureName] as any;
   }
 
-  get hoverBandingOpacity() {
-    return this.values.hoverBandingOpacity;
-  }
-  
-  set hoverBandingOpacity(value: number) {
-    this.set('hoverBandingOpacity', value);
+  setSetting(featureName: keyof SettingsObject, value: any) {
+    this.set(featureName, value);
   }
 
-  get hoverBandingColor() {
-    return this.values.hoverBandingColor;
-  }
-  
-  set hoverBandingColor(value: string) {
-    this.set('hoverBandingColor', value);
-  }
-  
-
-  // Zebra Stripes
-  get zebraStripes() {
-    return this.values.zebraStripes;
-  }
-  
-  set zebraStripes(value: boolean) {
-    this.set("zebraStripes", value);
-  }
-
-  get zebraStripesOpacity() {
-    return this.values.zebraStripesOpacity;
-  }
-  
-  set zebraStripesOpacity(value: number) {
-    this.set('zebraStripesOpacity', value);
-  }
-
-  get zebraStripesColor() {
-    return this.values.zebraStripesColor;
-  }
-  
-  set zebraStripesColor(value: string) {
-    this.set('zebraStripesColor', value);
-  }
-  
-  
-  // Drag Handles
-  get dragHandle() {
-    return this.values.dragHandle;
-  }
-
-  set dragHandle(value: boolean) {
-    this.set("dragHandle", value);
-  }
-  
-  // 
   onChange(callback: Callback) { // When the settings change, add the callback function to the set
     this.callbacks.add(callback);
   }
@@ -107,10 +58,12 @@ export class Settings { // The class that handles our settings
   }
 
   reset(key: string) { // Reset the setting back to its default
+    console.log('reset pre: ' + key + ' ' + DEFAULT_SETTINGS[key as keyof typeof DEFAULT_SETTINGS])
     if (key in DEFAULT_SETTINGS) {
       const defaultValue = DEFAULT_SETTINGS[key as keyof typeof DEFAULT_SETTINGS];
       this.set(key as keyof SettingsObject, defaultValue); // Reset to the default value
     }
+    console.log('reset post: ' + key + ' ' + this.values[key as keyof SettingsObject])
   }
 
   async load() { // When loading, establish the default settings then apply any local changes
