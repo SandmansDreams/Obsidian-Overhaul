@@ -3,6 +3,9 @@ const DEFAULTS = {
   hoverBand: false,
   zebraStripes: false,
   debug: false,
+  hoverBandingColor: '#cccccc',
+  hoverBandingTransitionTime: 0.1,
+  zebraStripesColor: '#cccccc',
 };
 
 export default class Settings {
@@ -38,5 +41,19 @@ export default class Settings {
   set(key, value) {
     this.values[key] = value;
     for (const cb of this.callbacks) cb();
+  }
+
+  getSetting(key) {
+    return this.values[key];
+  }
+
+  setSetting(key, value) {
+    this.set(key, value);
+  }
+
+  reset(key) {
+    if (Object.prototype.hasOwnProperty.call(DEFAULTS, key)) {
+      this.set(key, DEFAULTS[key]);
+    }
   }
 }
