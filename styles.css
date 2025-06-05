@@ -79,3 +79,7 @@
     transition: var(--overhaul-handle-transition-time);
     opacity: 1;
 }
+
+.hide-drag-handles .drag-handle-indicator {
+    display: none;
+}
