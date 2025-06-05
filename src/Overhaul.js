@@ -3,7 +3,7 @@ import Settings from './services/Settings.js';
 import SettingsTab from './features/SettingsTab.js';
 import ZebraStripes from './features/ZebraStripes.js';
 import HoverBanding from './features/HoverBanding.js';
-// import DragHandle from './features/DragHandle.js';
+import DragHandle from './features/DragHandle.js';
 
 export default class OverhaulPlugin extends Plugin {
   async onload() {
@@ -14,7 +14,7 @@ export default class OverhaulPlugin extends Plugin {
       new SettingsTab(this, this.settings),
       new ZebraStripes(this.settings),
       new HoverBanding(this.settings),
-      // new DragHandle(this),
+      new DragHandle(this, this.settings),
     ];
 
     for (const feature of this.features) {

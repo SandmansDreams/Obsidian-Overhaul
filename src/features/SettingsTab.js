@@ -23,6 +23,8 @@ class Tab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
+    containerEl.createEl('h2', {text: 'Obsidian Overhaul'});
+
     new Setting(containerEl)
       .setName('Drag Handles')
       .setDesc('Add drag handles to the editor.')
