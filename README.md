@@ -1,2 +1,2 @@
-# Notionize
+# Obsidian Overhaul
 
