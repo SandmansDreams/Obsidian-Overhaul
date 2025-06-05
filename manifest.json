@@ -1,9 +1,9 @@
 {
-	"id": "notionize-plugin",
-	"name": "Notionize",
+        "id": "obsidian-overhaul",
+        "name": "Obsidian Overhaul",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Making Obsidian a little more like Notion.",
+        "description": "Overhaul Obsidian with interface enhancements.",
 	"author": "SandmansDreams",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",

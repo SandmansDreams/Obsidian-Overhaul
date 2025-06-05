@@ -1,18 +1,18 @@
 :root {
-    --notionize-handle-transition-time: .3s;
-    --notionize-banding-transition-time: .1s;
+    --overhaul-handle-transition-time: .3s;
+    --overhaul-banding-transition-time: .1s;
 }
 
-.notionize-zebra-stripes .cm-line:nth-child(even) {
+.overhaul-zebra-stripes .cm-line:nth-child(even) {
     background-color: var(--color-base-10);
 }
 
-.notionize-zebra-stripes .cm-gutterElement:nth-child(odd) {
+.overhaul-zebra-stripes .cm-gutterElement:nth-child(odd) {
     background-color: var(--color-base-10);
 }
 
-.notionize-hover-banding .cm-line:hover {
-    transition: background-color var(--notionize-banding-transition-time);
+.overhaul-hover-banding .cm-line:hover {
+    transition: background-color var(--overhaul-banding-transition-time);
     background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
     border-radius: 4px;
 }
@@ -37,7 +37,7 @@
 }
 
 .drag-handle-indicator { /* Styles for the handle span container, mostly taken from Obsidian */
-    transition: var(--notionize-handle-transition-time);
+    transition: var(--overhaul-handle-transition-time);
     display: inline-block;
     position: relative;
     /* right: 16px; This works, but needs better implementation*/
@@ -53,7 +53,7 @@
 }
 
 .drag-handle-indicator:hover { /* When the handle is hovered, look ready to peel */
-    transition: var(--notionize-handle-transition-time);
+    transition: var(--overhaul-handle-transition-time);
     background-color: var(--interactive-hover);
     border-radius: 4px;
 }
@@ -65,7 +65,7 @@
 }
 
 .drag-handle-icon { /* Styles for the indicator itself, mostly taken from Obsidian */
-    transition: var(--notionize-handle-transition-time);
+    transition: var(--overhaul-handle-transition-time);
     display: flex;
     align-items: center;
     position: absolute;
@@ -76,6 +76,6 @@
 }
 
 .cm-line:hover .drag-handle-icon { /* When the line is hovered, make the icon appear */
-    transition: var(--notionize-handle-transition-time);
+    transition: var(--overhaul-handle-transition-time);
     opacity: 1;
 }
